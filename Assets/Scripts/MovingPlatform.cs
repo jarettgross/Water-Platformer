@@ -3,8 +3,12 @@ using System.Collections;
 
 public class MovingPlatform : MonoBehaviour {
 
+	/**
+	 * A platform that moves on its own
+	**/
+
 	private Rigidbody2D rb;
-	private BoxCollider2D topTrigger;
+	private BoxCollider2D topTrigger; //needed so that the player can become a child of this object and inherit its velocity
 
 	public float horizontalSpeed;
 	public float verticalSpeed;
