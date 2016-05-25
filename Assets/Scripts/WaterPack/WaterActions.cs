@@ -16,7 +16,8 @@ public class WaterActions : MonoBehaviour {
 			if (other.tag == "BubbleMaker") {
 				colCenter = other.GetComponent<CircleCollider2D> ().bounds.center;
 				colExtents = other.GetComponent<CircleCollider2D> ().bounds.extents;
-			} else {
+			}
+            else {
 				colCenter = other.GetComponent<BoxCollider2D> ().bounds.center;
 				colExtents = other.GetComponent<BoxCollider2D> ().bounds.extents;
 			}

@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour {
 	private bool isGrounded;
 	public float jumpForce;
 
+    public Vector2 curVel;
+
 	public LayerMask specifyGround;
 
 	public bool isOnMovingPlatform;
@@ -28,11 +30,10 @@ public class PlayerController : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		rigidBody = GetComponent<Rigidbody2D> ();
-
 		isOnMovingPlatform = false;
 		isOnBubble = false;
 		isInHeatArea = false;
-		//isOnIceBlock = false;
+		isOnIceBlock = false;
 	}
 
 	// Update is called once per frame
@@ -42,26 +43,60 @@ public class PlayerController : MonoBehaviour {
 		flipHorizontal ();
 	}
 
-	//Handle left, right movement; jumping
-	private void handleMovement(float horizontal) {
-		rigidBody.velocity = new Vector2 (movementSpeed * horizontal, rigidBody.velocity.y); //left, right movement
+    //Handle left, right movement; jumping
+    private void handleMovement(float horizontal) {
+        if (!isOnIceBlock) {
+        rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y); //left, right movement
 
-		//inherit velocity from parent
-		if (isOnMovingPlatform) {
-			if (isOnBubble) {
-				rigidBody.velocity += new Vector2 (transform.parent.GetComponent<Rigidbody2D> ().velocity.x, 0); //only inherit x velocity from bubble
-			} else {
-				rigidBody.velocity += transform.parent.GetComponent<Rigidbody2D> ().velocity; //inherit x, y velocity from moving platform
-			}
-		}
+        //inherit velocity from parent
+        if (isOnMovingPlatform) {
+            if (isOnBubble) {
+                rigidBody.velocity += new Vector2(transform.parent.GetComponent<Rigidbody2D>().velocity.x, 0); //only inherit x velocity from bubble
+            } else {
+                rigidBody.velocity += transform.parent.GetComponent<Rigidbody2D>().velocity; //inherit x, y velocity from moving platform
+            }
+        }
 
-		if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
-			isGrounded = false;
-			rigidBody.AddForce (new Vector2 (0, jumpForce));
-		} else {
-			isGrounded = true;
-		}
-	}
+        if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
+            isGrounded = false;
+            rigidBody.AddForce(new Vector2(0, jumpForce));
+        } else {
+            isGrounded = true;
+        }
+    }
+        else if (isOnIceBlock)
+        {
+            Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
+            curVel = Vector2.Lerp(curVel, vel, 3*Time.deltaTime);
+            if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W)))
+            { //jumping
+                isGrounded = false;
+                rigidBody.AddForce(new Vector2(0, jumpForce));
+            }
+            else {
+                isGrounded = true;
+            }
+            if (Input.GetKey(KeyCode.D))
+            {
+                //rigidBody.velocity += new Vector2(movementSpeed*10 * Time.deltaTime, rigidBody.velocity.y);
+                //rigidBody.AddForce(new Vector2(1000 * Time.deltaTime, 0));
+                rigidBody.velocity = curVel;
+                //slideForce = Mathf.Abs(slideForce);
+            }
+            if (Input.GetKey(KeyCode.A))
+            {
+                //rigidBody.AddForce(new Vector2(-1000 * Time.deltaTime, 0));
+                rigidBody.velocity = curVel;
+                //rigidBody.velocity += new Vector2(-movementSpeed*10* Time.deltaTime, rigidBody.velocity.y);
+                //slideForce = Mathf.Abs(slideForce) * -1;
+            }
+            if(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow))
+            {
+                rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
+            }
+           // rigidBody.AddForce(new Vector2(slideForce * Time.deltaTime, 0));
+            }
+        }
 
 	//Turn sprite around depending on arrow key pressed
 	private void flipHorizontal() {
@@ -98,7 +133,7 @@ public class PlayerController : MonoBehaviour {
 			isOnBubble = true;
 		} else if (collider.tag == "Heat") { //in heat area, can't use water
 			isInHeatArea = true;
-		} else if (collider.tag == "Bubble") { //on bubble, make buble parent so player moves with bubble
+		} else if (collider.tag == "Bubble") { //on bubble, make bubble parent so player moves with bubble
 			transform.parent = collider.transform;
 			isOnMovingPlatform = true;
 			isOnBubble = true;
@@ -120,13 +155,14 @@ public class PlayerController : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D col) {
 		if (col.gameObject.tag == "IceBlock") {
-			//isOnIceBlock = true;
+			isOnIceBlock = true;
+            GetComponent<Collider2D>().sharedMaterial.friction = 0;
 		}
 	}
 
 	void OnCollisionExit2D(Collision2D col) {
 		if (col.gameObject.tag == "IceBlock") {
-			//isOnIceBlock = false;
+			isOnIceBlock = false;
 		}
 	}
 }
