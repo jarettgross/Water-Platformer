@@ -45,58 +45,47 @@ public class PlayerController : MonoBehaviour {
 
     //Handle left, right movement; jumping
     private void handleMovement(float horizontal) {
-        if (!isOnIceBlock) {
-        rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y); //left, right movement
+		if (!isOnIceBlock) {
+        	rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y); //left, right movement
 
-        //inherit velocity from parent
-        if (isOnMovingPlatform) {
-            if (isOnBubble) {
-                rigidBody.velocity += new Vector2(transform.parent.GetComponent<Rigidbody2D>().velocity.x, 0); //only inherit x velocity from bubble
-            } else {
-                rigidBody.velocity += transform.parent.GetComponent<Rigidbody2D>().velocity; //inherit x, y velocity from moving platform
-            }
-        }
+	        //inherit velocity from parent
+	        if (isOnMovingPlatform) {
+	            if (isOnBubble) {
+	                rigidBody.velocity += new Vector2(transform.parent.GetComponent<Rigidbody2D>().velocity.x, 0); //only inherit x velocity from bubble
+	            } else {
+	                rigidBody.velocity += transform.parent.GetComponent<Rigidbody2D>().velocity; //inherit x, y velocity from moving platform
+	            }
+	        }
 
-        if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
-            isGrounded = false;
-            rigidBody.AddForce(new Vector2(0, jumpForce));
-        } else {
-            isGrounded = true;
-        }
-    }
-        else if (isOnIceBlock)
-        {
+	        if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
+	            isGrounded = false;
+	            rigidBody.AddForce(new Vector2(0, jumpForce));
+	        } else {
+	            isGrounded = true;
+	        }
+		} else if (isOnIceBlock) {
             Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             curVel = Vector2.Lerp(curVel, vel, 3*Time.deltaTime);
-            if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W)))
-            { //jumping
+            if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
                 isGrounded = false;
                 rigidBody.AddForce(new Vector2(0, jumpForce));
-            }
-            else {
+            } else {
                 isGrounded = true;
             }
-            if (Input.GetKey(KeyCode.D))
-            {
-                //rigidBody.velocity += new Vector2(movementSpeed*10 * Time.deltaTime, rigidBody.velocity.y);
-                //rigidBody.AddForce(new Vector2(1000 * Time.deltaTime, 0));
+
+            if (Input.GetKey(KeyCode.D)) {
                 rigidBody.velocity = curVel;
-                //slideForce = Mathf.Abs(slideForce);
             }
-            if (Input.GetKey(KeyCode.A))
-            {
-                //rigidBody.AddForce(new Vector2(-1000 * Time.deltaTime, 0));
+
+            if (Input.GetKey(KeyCode.A)) {
                 rigidBody.velocity = curVel;
-                //rigidBody.velocity += new Vector2(-movementSpeed*10* Time.deltaTime, rigidBody.velocity.y);
-                //slideForce = Mathf.Abs(slideForce) * -1;
             }
-            if(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow))
-            {
+
+            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow)) {
                 rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             }
-           // rigidBody.AddForce(new Vector2(slideForce * Time.deltaTime, 0));
-            }
-        }
+		}
+	}
 
 	//Turn sprite around depending on arrow key pressed
 	private void flipHorizontal() {

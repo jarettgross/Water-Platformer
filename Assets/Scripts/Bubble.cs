@@ -8,14 +8,14 @@ public class Bubble : MonoBehaviour {
 	**/
 
 	public ParticleSystem bubblePop;
+	public AudioClip bubbleFormSound;
+	public AudioClip bubblePopSound;
 
-	// Use this for initialization
 	void Start () {
-	
+		AudioSource.PlayClipAtPoint (bubbleFormSound, transform.position);
 	}
-	
-	// Update is called once per frame
-	void Update () {
-	
+
+	void OnDestroy() {
+		AudioSource.PlayClipAtPoint (bubblePopSound, transform.position);
 	}
 }

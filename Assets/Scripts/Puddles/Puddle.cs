@@ -44,6 +44,8 @@ public class Puddle : MonoBehaviour {
 	//particle system for splash
 	public GameObject splash;
 
+	public AudioClip splashSound;
+
 	//material for the top of the water
 	public Material mat;
 

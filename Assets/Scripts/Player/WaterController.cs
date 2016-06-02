@@ -24,8 +24,7 @@ public class WaterController : MonoBehaviour {
 
 	public float waterIncreaseRate = 2; //how quickly to refill player's water when in a puddle
 
-	// Use this for initialization
-	void Start () {
+	void Start() {
 		rigidBody = GetComponent<Rigidbody2D> ();
 
 		waterRemaining = initialWaterAmount;
@@ -39,12 +38,12 @@ public class WaterController : MonoBehaviour {
 
 	void FixedUpdate() {
 		if (waterRemaining > 0 && isArrowKeyDown) {
-			rigidBody.AddForce (oppWaterForce); //add force to player if using water
+			rigidBody.AddForce (oppWaterForce);
 		}
 	}
 
 	private void handleWater() {
-		if (!gameObject.GetComponent<PlayerController>().isInHeatArea && waterRemaining > 0) { //not in heat and has water
+		if (!gameObject.GetComponent<PlayerController>().isInHeatArea && waterRemaining > 0) {
 
 			//prevent water from going through objects when the waterPack gameobject is overlapping another object
 			bool isOverlappingObj = false;
@@ -93,10 +92,10 @@ public class WaterController : MonoBehaviour {
 					isPlayingWater = true;
 				}
 
-				waterRemaining -= Time.deltaTime; //decrease water amount
+				waterRemaining -= Time.deltaTime;
 				waterAmountSlider.value = waterRemaining / initialWaterAmount;
 
-				if (waterRemaining <= 0) { //stop water animation when none left
+				if (waterRemaining <= 0) {
 					isPlayingWater = false;
 					waterPack.Stop ();
 				}

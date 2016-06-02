@@ -23,8 +23,8 @@ public class BubbleMaker : MonoBehaviour {
 	public bool isBubbleActive = false;
 
 	public List<GameObject> bubbleList;
-	
-	// Update is called once per frame
+
+
 	void Update () {
 		foreach (GameObject b in bubbleList) {
 			if (b.transform.position.y >= maxBubbleHeight) { //then destroy bubble
@@ -34,13 +34,17 @@ public class BubbleMaker : MonoBehaviour {
 					b.transform.DetachChildren ();
 				}
 				bubbleList.Remove (b);
-				Instantiate (b.GetComponent<Bubble> ().bubblePop, b.transform.position, Quaternion.identity); //bubble popped, play water particle system
+				GameObject waterPS = (GameObject) Instantiate (b.GetComponent<Bubble> ().bubblePop.gameObject, b.transform.position, Quaternion.identity); //bubble popped, play water particle system
 				Destroy(b);
+				Destroy (waterPS, waterPS.GetComponent<ParticleSystem> ().startLifetime);
 				break;
 			}
 
 			//move bubble left and right over time
-			if (Mathf.Abs(b.transform.position.x - gameObject.transform.position.x) >= maxBubbleWidth) {
+			if (b.transform.position.x - gameObject.transform.position.x >= maxBubbleWidth && b.GetComponent<Rigidbody2D> ().velocity.x > 0) {
+				Vector2 tempVelocity = b.GetComponent<Rigidbody2D> ().velocity;
+				b.GetComponent<Rigidbody2D> ().velocity = new Vector2 (-tempVelocity.x, tempVelocity.y);
+			} else if (b.transform.position.x - gameObject.transform.position.x <= -maxBubbleWidth && b.GetComponent<Rigidbody2D> ().velocity.x < 0) {
 				Vector2 tempVelocity = b.GetComponent<Rigidbody2D> ().velocity;
 				b.GetComponent<Rigidbody2D> ().velocity = new Vector2 (-tempVelocity.x, tempVelocity.y);
 			}

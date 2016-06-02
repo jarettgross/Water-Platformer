@@ -8,6 +8,7 @@ public class SquirtWaterButton : MonoBehaviour {
 	**/
 
 	public ParticleSystem waterSystem;
+	public AudioClip switchSound;
 
 	private bool isPlaying = false;
 	private float timer = 0.0f;
@@ -27,6 +28,7 @@ public class SquirtWaterButton : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "Player" || other.tag == "WaterPushBlock") {
+			AudioSource.PlayClipAtPoint (switchSound, transform.position);
 			waterSystem.Play ();
 			isPlaying = true;
 		}

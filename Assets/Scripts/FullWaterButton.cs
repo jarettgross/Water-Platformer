@@ -8,11 +8,11 @@ public class FullWaterButton : MonoBehaviour {
 	**/
 
 	public ParticleSystem waterSystem;
+	public AudioClip switchSound;
 	public bool playOnStart;
 
 	private bool isPlaying = false;
 
-	// Use this for initialization
 	void Start () {
 		if (playOnStart) {
 			waterSystem.Play ();
@@ -21,6 +21,7 @@ public class FullWaterButton : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "Player" || other.tag == "WaterPushBlock") {
+			AudioSource.PlayClipAtPoint (switchSound, transform.position);
 			if (isPlaying) {
 				waterSystem.Stop ();
 			} else {

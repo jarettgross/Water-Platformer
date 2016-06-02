@@ -16,8 +16,7 @@ public class WaterActions : MonoBehaviour {
 			if (other.tag == "BubbleMaker") {
 				colCenter = other.GetComponent<CircleCollider2D> ().bounds.center;
 				colExtents = other.GetComponent<CircleCollider2D> ().bounds.extents;
-			}
-            else {
+			} else {
 				colCenter = other.GetComponent<BoxCollider2D> ().bounds.center;
 				colExtents = other.GetComponent<BoxCollider2D> ().bounds.extents;
 			}
@@ -31,7 +30,8 @@ public class WaterActions : MonoBehaviour {
 					//if collided with snow and ice block is less than max width
 					if (other.tag == "Snow" && other.transform.GetChild(1).localScale.y <= other.transform.GetComponentInChildren<IceBlock>().maxIceWidth) {
 						Vector3 tempScale = other.transform.GetChild(1).localScale;
-						tempScale.y += Time.deltaTime * other.transform.GetChild(1).GetComponent<IceBlock>().growSpeed;
+						tempScale.y = Mathf.Lerp (tempScale.y, 1, Time.deltaTime * other.transform.GetChild (1).GetComponent<IceBlock> ().growSpeed);
+						//tempScale.y += Time.deltaTime * other.transform.GetChild(1).GetComponent<IceBlock>().growSpeed;
 						other.transform.GetChild(1).localScale = tempScale;
 
 					} else if (other.tag == "BubbleMaker") { //create a bubble if allowed (based on time since last bubble was created)

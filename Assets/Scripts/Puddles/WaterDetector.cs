@@ -36,6 +36,7 @@ public class WaterDetector : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D Hit) {
 		if (Hit.GetComponent<Rigidbody2D>() != null && !transform.parent.GetComponent<Puddle>().isRefillingPlayer) {
 			transform.parent.GetComponent<Puddle>().Splash(transform.position.x, Hit.GetComponent<Rigidbody2D>().velocity.y*Hit.GetComponent<Rigidbody2D>().mass / 40f);
+			AudioSource.PlayClipAtPoint(transform.parent.GetComponent<Puddle> ().splashSound, transform.position);
 		}
 	}
 }
