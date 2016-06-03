@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour {
 
@@ -25,10 +26,10 @@ public class PlayerController : MonoBehaviour {
 	public bool isInHeatArea;
 	private bool isOnIceBlock;
 
-	public Vector3 resetPosition;
+	public bool preventMovement;
+	private bool isRestarting;
 
-	// Use this for initialization
-	void Start () {
+	void Start() {
 		rigidBody = GetComponent<Rigidbody2D> ();
 		isOnMovingPlatform = false;
 		isOnBubble = false;
@@ -36,11 +37,23 @@ public class PlayerController : MonoBehaviour {
 		isOnIceBlock = false;
 	}
 
-	// Update is called once per frame
+
 	void Update() {
-		isGrounded = checkGrounded ();
-		handleMovement (Input.GetAxis ("Horizontal"));
-		flipHorizontal ();
+		if (Input.GetKeyDown(KeyCode.R)) {
+			isRestarting = true;
+		}
+
+		if (!preventMovement && !isRestarting) {
+			isGrounded = checkGrounded ();
+			handleMovement (Input.GetAxis ("Horizontal"));
+			flipHorizontal ();
+		} else {
+			rigidBody.velocity = new Vector2 (0, 0);
+			rigidBody.isKinematic = true;
+			if (isRestarting) {
+				StartCoroutine (RestartLevel ());
+			}
+		}
 	}
 
     //Handle left, right movement; jumping
@@ -91,11 +104,11 @@ public class PlayerController : MonoBehaviour {
 	private void flipHorizontal() {
 		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
 			Vector3 invertedScale = transform.localScale;
-			invertedScale.x = -1;
+			invertedScale.x = -transform.localScale.x;
 			transform.localScale = invertedScale;
 		} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
 			Vector3 invertedScale = transform.localScale;
-			invertedScale.x = 1;
+			invertedScale.x = transform.localScale.x;
 			transform.localScale = invertedScale;
 		}
 	}
@@ -103,12 +116,34 @@ public class PlayerController : MonoBehaviour {
 	//Check if grounded so player can jump
 	private bool checkGrounded() {
 		if (isOnMovingPlatform || rigidBody.velocity.y <= 0.001f) {
-			foreach (Transform gp in groundPoints) {
-				Collider2D[] colliders = Physics2D.OverlapCircleAll (gp.position, groundRadius, specifyGround);
-				for (int i = 0; i < colliders.Length; i++) {
-					if (colliders [i].gameObject != gameObject) { //found collision with ground, allow jumping
-						return true;
-					}
+
+			//Middle ground point
+			Collider2D[] colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [0].position.x - groundRadius, groundPoints [0].position.y), 
+				new Vector2 (groundPoints [0].position.x + groundRadius, groundPoints [0].position.y - groundRadius), specifyGround);
+
+			for (int i = 0; i < colliders.Length; i++) {
+				if (colliders [i].gameObject != gameObject) { //found collision with ground, allow jumping
+					return true;
+				}
+			}
+
+			//Right ground point
+			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [1].position.x, groundPoints [1].position.y), 
+				new Vector2 (groundPoints [1].position.x - groundRadius, groundPoints [1].position.y - groundRadius), specifyGround);
+
+			for (int i = 0; i < colliders.Length; i++) {
+				if (colliders [i].gameObject != gameObject) {
+					return true;
+				}
+			}
+
+			//Left ground point
+			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [2].position.x, groundPoints [2].position.y), 
+				new Vector2 (groundPoints [2].position.x + groundRadius, groundPoints [2].position.y - groundRadius), specifyGround);
+
+			for (int i = 0; i < colliders.Length; i++) {
+				if (colliders [i].gameObject != gameObject) {
+					return true;
 				}
 			}
 		}
@@ -118,6 +153,7 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.tag == "MovingPlatform") { //on moving platform, make platform parent so player moves with platform
 			transform.parent = collider.transform;
+			//transform.SetParent (collider.transform, true);
 			isOnMovingPlatform = true; //for altering player velocity
 			isOnBubble = true;
 		} else if (collider.tag == "Heat") { //in heat area, can't use water
@@ -153,5 +189,11 @@ public class PlayerController : MonoBehaviour {
 		if (col.gameObject.tag == "IceBlock") {
 			isOnIceBlock = false;
 		}
+	}
+
+	IEnumerator RestartLevel() {
+		float fadeTime = GameObject.Find ("FadeManager").GetComponent<FadeManager> ().BeginFade (1, 1);
+		yield return new WaitForSeconds (fadeTime);
+		SceneManager.LoadScene(SceneManager.GetActiveScene ().name);
 	}
 }

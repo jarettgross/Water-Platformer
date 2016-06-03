@@ -23,6 +23,7 @@ public class WaterController : MonoBehaviour {
 	private bool isPlayingWater = false;
 
 	public float waterIncreaseRate = 2; //how quickly to refill player's water when in a puddle
+	public float waterOverlapRadius = 0.07f;
 
 	void Start() {
 		rigidBody = GetComponent<Rigidbody2D> ();
@@ -47,9 +48,10 @@ public class WaterController : MonoBehaviour {
 
 			//prevent water from going through objects when the waterPack gameobject is overlapping another object
 			bool isOverlappingObj = false;
-			Collider2D[] colliders = Physics2D.OverlapCircleAll (waterPack.transform.position, .07f);
+			Collider2D[] colliders = Physics2D.OverlapCircleAll (waterPack.transform.position, waterOverlapRadius);
 			for (int i = 0; i < colliders.Length; i++) {
-				if (colliders [i].gameObject != gameObject && colliders [i].gameObject != waterPack.gameObject) { //found collision with ground, allow jumping
+				if (colliders [i].gameObject != gameObject && colliders [i].gameObject != waterPack.gameObject
+					&& colliders[i].gameObject.GetComponent<BubbleMaker>() == null) {
 					isOverlappingObj = true;
 					isPlayingWater = false;
 					waterPack.Stop ();

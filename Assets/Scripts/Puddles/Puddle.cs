@@ -72,10 +72,10 @@ public class Puddle : MonoBehaviour {
 	private GameObject player;
 
 	void Start() {
-		SpawnWater(puddleLeft, puddleWidth, puddleTop, puddleBottom);
-		player = GameObject.FindGameObjectWithTag ("Player");
 		originalTop = puddleTop;
 		originalBottom = puddleBottom;
+		SpawnWater(puddleLeft, puddleWidth, puddleTop, puddleBottom);
+		player = GameObject.FindGameObjectWithTag ("Player");
 	}
 
 
@@ -105,7 +105,7 @@ public class Puddle : MonoBehaviour {
 
 	public void SpawnWater(float Left, float Width, float Top, float Bottom) {
 		gameObject.AddComponent<BoxCollider2D>();
-		gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, 0);
+		gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, ((puddleTop - puddleBottom) / 2 - (originalTop - originalBottom) / 2) - 0.5f);
 		gameObject.GetComponent<BoxCollider2D>().size = new Vector2(Width, Top - Bottom);
 		gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
 		gameObject.GetComponent<BoxCollider2D> ().name = "MainPuddleCollider";
@@ -256,7 +256,7 @@ public class Puddle : MonoBehaviour {
 			player.GetComponent<WaterController> ().IncreaseWaterAmount (); //increase player water
 
 			//Set collider properties of water
-			gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, (puddleTop - puddleBottom) / 2 - (originalTop - originalBottom) / 2);
+			gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, ((puddleTop - puddleBottom) / 2 - (originalTop - originalBottom) / 2) - 0.5f);
 			gameObject.GetComponent<BoxCollider2D>().size = new Vector2(puddleWidth, puddleTop - puddleBottom);
 
 			for (int i = 0; i < colliders.Length; i++) {

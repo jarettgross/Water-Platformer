@@ -13,14 +13,22 @@ public class LevelManager : MonoBehaviour {
 	private int latestLevelBeat;
 	private const int NUM_LEVELS = 20;
 
+	private float widthScale = 0.8f;
+	private float heightScale = 0.8f;
+
 	void Start () {
 		latestLevelBeat = PlayerPrefs.GetInt ("LatestLevelBeat"); //get saved variable
 
-		//TODO: properly center level buttons; add "Levels" header
-		levelSelectArea.GetComponent<RectTransform> ().localScale = new Vector3 (0.8f, 0.8f, 1);
-		levelSelectArea.GetComponent<GridLayoutGroup> ().spacing = new Vector2 (Screen.width / 100, Screen.height / 100);
-		levelSelectArea.GetComponent<GridLayoutGroup> ().cellSize = new Vector2 (100, 100);
-		levelSelectArea.GetComponent<GridLayoutGroup> ().padding = new RectOffset (0, 0, 0, 0);
+		levelSelectText.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height * (1 - heightScale));
+		levelSelectText.GetComponent<RectTransform> ().localPosition = new Vector3 (0, levelSelectText.transform.parent.position.y * heightScale, 0);
+
+		//TODO: change font size of "Levels" header based on screen dpi
+		//levelSelectText.fontSize;
+
+		levelSelectArea.GetComponent<RectTransform> ().localScale = new Vector3 (widthScale, heightScale, 1);
+		levelSelectArea.GetComponent<GridLayoutGroup> ().spacing = new Vector2 (widthScale * Screen.width / 16, heightScale * Screen.height / 15);
+		levelSelectArea.GetComponent<GridLayoutGroup> ().cellSize = new Vector2 (widthScale * Screen.width / 5, heightScale * Screen.height / 4);
+		levelSelectArea.GetComponent<GridLayoutGroup> ().padding = new RectOffset (0, 0, Mathf.FloorToInt(Screen.height * 0.1f), 0);
 
 		for (int i = 1; i <= NUM_LEVELS; i++) {
 			GameObject buttonCell = Instantiate (levelButton) as GameObject;

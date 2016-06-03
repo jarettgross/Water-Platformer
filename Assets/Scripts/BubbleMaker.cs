@@ -27,7 +27,7 @@ public class BubbleMaker : MonoBehaviour {
 
 	void Update () {
 		foreach (GameObject b in bubbleList) {
-			if (b.transform.position.y >= maxBubbleHeight) { //then destroy bubble
+			if (Mathf.Abs(b.transform.position.y - transform.position.y) >= maxBubbleHeight) { //then destroy bubble
 				if (b.transform.childCount > 0) { //remove children
 					b.transform.GetChild (0).GetComponent<PlayerController> ().isOnMovingPlatform = false;
 					b.transform.GetChild (0).GetComponent<PlayerController> ().isOnBubble = false;
@@ -35,6 +35,7 @@ public class BubbleMaker : MonoBehaviour {
 				}
 				bubbleList.Remove (b);
 				GameObject waterPS = (GameObject) Instantiate (b.GetComponent<Bubble> ().bubblePop.gameObject, b.transform.position, Quaternion.identity); //bubble popped, play water particle system
+				AudioSource.PlayClipAtPoint (b.GetComponent<Bubble>().bubblePopSound, b.transform.position);
 				Destroy(b);
 				Destroy (waterPS, waterPS.GetComponent<ParticleSystem> ().startLifetime);
 				break;

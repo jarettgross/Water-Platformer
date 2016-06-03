@@ -14,8 +14,4 @@ public class Bubble : MonoBehaviour {
 	void Start () {
 		AudioSource.PlayClipAtPoint (bubbleFormSound, transform.position);
 	}
-
-	void OnDestroy() {
-		AudioSource.PlayClipAtPoint (bubblePopSound, transform.position);
-	}
 }

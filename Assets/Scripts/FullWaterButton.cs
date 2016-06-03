@@ -15,6 +15,7 @@ public class FullWaterButton : MonoBehaviour {
 
 	void Start () {
 		if (playOnStart) {
+			isPlaying = true;
 			waterSystem.Play ();
 		}
 	}
