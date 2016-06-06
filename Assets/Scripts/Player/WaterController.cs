@@ -95,8 +95,6 @@ public class WaterController : MonoBehaviour {
 				}
 
 				waterRemaining -= Time.deltaTime;
-				waterAmountSlider.value = waterRemaining / initialWaterAmount;
-
 				if (waterRemaining <= 0) {
 					isPlayingWater = false;
 					waterPack.Stop ();
