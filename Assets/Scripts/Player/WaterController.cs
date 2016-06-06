@@ -25,10 +25,16 @@ public class WaterController : MonoBehaviour {
 	public float waterIncreaseRate = 2; //how quickly to refill player's water when in a puddle
 	public float waterOverlapRadius = 0.07f;
 
+	public bool manualSetWaterAmount;
+	public float manualWaterAmount;
+
 	void Start() {
 		rigidBody = GetComponent<Rigidbody2D> ();
 
 		waterRemaining = initialWaterAmount;
+		if (manualSetWaterAmount) {
+			waterRemaining = manualWaterAmount;
+		}
 
 		waterAmountSlider.GetComponent<RectTransform> ().sizeDelta = new Vector2 (Screen.width / 3, Screen.height / 10); //set slider width, height
 	}
@@ -95,6 +101,8 @@ public class WaterController : MonoBehaviour {
 				}
 
 				waterRemaining -= Time.deltaTime;
+				waterAmountSlider.value = waterRemaining / initialWaterAmount;
+
 				if (waterRemaining <= 0) {
 					isPlayingWater = false;
 					waterPack.Stop ();

@@ -47,9 +47,11 @@ public class MovingPlatform : MonoBehaviour {
         rb.velocity = new Vector2(-horizontalSpeed, -verticalSpeed); //move in reverse direction
 
         while (!Mathf.Approximately(Mathf.Sqrt(Mathf.Pow(transform.position.x - startPos.x, 2) + Mathf.Pow(transform.position.y - startPos.y, 2)), 0)) { //wait while platform has not moved predefined distance
-            if (transform.position.x <= startPos.x && transform.position.y <= startPos.y) {
+			if ((horizontalSpeed > 0) && transform.position.x <= startPos.x && transform.position.y <= startPos.y) {
                 break;
-            }
+			} else if ((horizontalSpeed < 0) && transform.position.x >= startPos.x && transform.position.y <= startPos.y) {
+				break;
+			}
             yield return null;
         }
 

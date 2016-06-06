@@ -34,10 +34,10 @@ public class BubbleMaker : MonoBehaviour {
 					b.transform.DetachChildren ();
 				}
 				bubbleList.Remove (b);
-				GameObject waterPS = (GameObject) Instantiate (b.GetComponent<Bubble> ().bubblePop.gameObject, b.transform.position, Quaternion.identity); //bubble popped, play water particle system
+				GameObject bubblePS = (GameObject) Instantiate (b.GetComponent<Bubble> ().bubblePop.gameObject, b.transform.position, Quaternion.identity); //bubble popped, play water particle system
 				AudioSource.PlayClipAtPoint (b.GetComponent<Bubble>().bubblePopSound, b.transform.position);
 				Destroy(b);
-				Destroy (waterPS, waterPS.GetComponent<ParticleSystem> ().startLifetime);
+				Destroy (bubblePS, bubblePS.GetComponent<ParticleSystem> ().startLifetime);
 				break;
 			}
 

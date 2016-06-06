@@ -8,6 +8,11 @@ public class PushBlock : MonoBehaviour {
 	**/
 
 	public float frictionAmount = 0.75f;
+	private float originalFriction;
+
+	void Start() {
+		originalFriction = frictionAmount;
+	}
 
 	void FixedUpdate() {
 		//decrease velocity over time
@@ -18,6 +23,15 @@ public class PushBlock : MonoBehaviour {
 	void OnCollisionEnter2D(Collision2D col) {
 		if (col.gameObject.tag == "Bubble") {
 			GetComponent<Rigidbody2D> ().freezeRotation = false;
+			frictionAmount = 1.0f;
+		} else if (col.gameObject.tag == "MovingPlatform") {
+			frictionAmount = 1.0f;
+		}
+	}
+
+	void OnCollisionExit2D(Collision2D col) {
+		if (col.gameObject.tag == "Bubble" || col.gameObject.tag == "MovingPlatform") {
+			frictionAmount = originalFriction;
 		}
 	}
 }

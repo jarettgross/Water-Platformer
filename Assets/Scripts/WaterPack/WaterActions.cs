@@ -39,6 +39,7 @@ public class WaterActions : MonoBehaviour {
 						if (!bm.isBubbleActive) {
 							bm.isBubbleActive = true;
 							GameObject bubbleClone = (GameObject)Instantiate (bm.bubble, bm.transform.position, Quaternion.identity);
+							bubbleClone.GetComponent<Bubble> ().bubbleMakerParent = bm;
 							bm.bubbleList.Add (bubbleClone);
 							bubbleClone.GetComponent<Rigidbody2D> ().velocity = new Vector2 (bm.velocityX, bm.velocityY);
 						}
