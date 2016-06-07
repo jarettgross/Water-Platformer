@@ -20,7 +20,8 @@ public class WaterController : MonoBehaviour {
 
 	private Vector2 oppWaterForce = new Vector2(0, 0);
 	private bool isArrowKeyDown = false;
-	private bool isPlayingWater = false;
+	public bool isPlayingWater = false;
+	public bool canPlayWaterSound;
 
 	public float waterIncreaseRate = 2; //how quickly to refill player's water when in a puddle
 	public float waterOverlapRadius = 0.07f;
@@ -57,9 +58,10 @@ public class WaterController : MonoBehaviour {
 			Collider2D[] colliders = Physics2D.OverlapCircleAll (waterPack.transform.position, waterOverlapRadius);
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject && colliders [i].gameObject != waterPack.gameObject
-					&& colliders[i].gameObject.GetComponent<BubbleMaker>() == null) {
+					&& colliders[i].gameObject.GetComponent<BubbleMaker>() == null && colliders[i].gameObject.tag != "Puddle") {
 					isOverlappingObj = true;
 					isPlayingWater = false;
+					canPlayWaterSound = true;
 					waterPack.Stop ();
 				}
 			}
@@ -98,6 +100,7 @@ public class WaterController : MonoBehaviour {
 				if (!isOverlappingObj && !isPlayingWater) { //play water if not already
 					waterPack.Play ();
 					isPlayingWater = true;
+					canPlayWaterSound = true;
 				}
 
 				waterRemaining -= Time.deltaTime;
@@ -105,6 +108,7 @@ public class WaterController : MonoBehaviour {
 
 				if (waterRemaining <= 0) {
 					isPlayingWater = false;
+					canPlayWaterSound = false;
 					waterPack.Stop ();
 				}
 			}
@@ -113,6 +117,7 @@ public class WaterController : MonoBehaviour {
 		if (!(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow))) { //not using arrows, stop water animation
 			isArrowKeyDown = false;
 			isPlayingWater = false;
+			canPlayWaterSound = false;
 			waterPack.Stop ();
 		}
 	}

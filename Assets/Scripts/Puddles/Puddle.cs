@@ -105,7 +105,7 @@ public class Puddle : MonoBehaviour {
 
 	public void SpawnWater(float Left, float Width, float Top, float Bottom) {
 		gameObject.AddComponent<BoxCollider2D>();
-		gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, ((puddleTop - puddleBottom) / 2 - (originalTop - originalBottom) / 2) - 0.5f);
+		//gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, ((puddleTop - puddleBottom) / 2 - (originalTop - originalBottom) / 2) - 0.5f);
 		gameObject.GetComponent<BoxCollider2D>().size = new Vector2(Width, Top - Bottom);
 		gameObject.GetComponent<BoxCollider2D>().isTrigger = true;
 		gameObject.GetComponent<BoxCollider2D> ().name = "MainPuddleCollider";
@@ -176,6 +176,7 @@ public class Puddle : MonoBehaviour {
 			//Create our colliders, set them be our child
 			colliders[i] = new GameObject();
 			colliders[i].name = "Trigger";
+			colliders[i].tag = "Puddle";
 			colliders[i].AddComponent<BoxCollider2D>();
 			colliders[i].transform.parent = transform;
 
@@ -187,6 +188,9 @@ public class Puddle : MonoBehaviour {
 			colliders[i].GetComponent<BoxCollider2D>().isTrigger = true;
 			colliders[i].AddComponent<WaterDetector>();
 		}
+		gameObject.GetComponent<BoxCollider2D> ().offset = 
+			new Vector2 ((colliders [0].transform.position.x + colliders [edgecount - 1].transform.position.x) / 2 - gameObject.transform.position.x, 
+				meshobjects[0].transform.position.y + gameObject.transform.position.y);
 	}
 
 	//Same as the code from in the meshes before, set the new mesh positions
@@ -256,14 +260,14 @@ public class Puddle : MonoBehaviour {
 			player.GetComponent<WaterController> ().IncreaseWaterAmount (); //increase player water
 
 			//Set collider properties of water
-			gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(0, ((puddleTop - puddleBottom) / 2 - (originalTop - originalBottom) / 2) - 0.5f);
+			gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(gameObject.GetComponent<BoxCollider2D>().offset.x, meshobjects[0].transform.position.y + gameObject.transform.position.y);
 			gameObject.GetComponent<BoxCollider2D>().size = new Vector2(puddleWidth, puddleTop - puddleBottom);
 
 			for (int i = 0; i < colliders.Length; i++) {
 				colliders [i].transform.position = new Vector3 (puddleLeft + puddleWidth * (i + 0.5f) / (Mathf.RoundToInt(puddleWidth) * 5), puddleTop - 0.5f, 0);
 			}
 
-		} else if (puddleTop <= puddleBottom) {
+		} else if (puddleTop - puddleBottom < 0.01f) {
 			Destroy (gameObject);
 		}
 	}

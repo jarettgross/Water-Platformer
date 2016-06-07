@@ -11,13 +11,14 @@ public class FullWaterButton : MonoBehaviour {
 	public AudioClip switchSound;
 	public bool playOnStart;
 
-	private bool isPlaying = false;
+	public bool isPlaying = false;
 
-	void Start () {
+	void Start() {
 		if (playOnStart) {
 			isPlaying = true;
 			waterSystem.Play ();
 		}
+		waterSystem.GetComponent<WaterActions> ().SetWaterTrigger (gameObject);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

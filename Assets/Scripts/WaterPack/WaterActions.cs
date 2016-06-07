@@ -3,7 +3,56 @@ using System.Collections;
 
 public class WaterActions : MonoBehaviour {
 
+	private AudioSource waterSizzle;
+	private float lastSizzleTime;
+
+	private AudioSource waterSound;
+	private float maxSoundValue;
+	private bool hasBeenPlayed;
+
 	private const float delta = 0.2f; //box containment leeway amount
+	private GameObject waterParent;
+	private GameObject triggerParent;
+
+	void Start() {
+		waterSizzle = GetComponents<AudioSource> ()[0];
+		waterSound  = GetComponents<AudioSource> ()[1];
+		maxSoundValue = waterSound.volume;
+		if (transform.parent != null) {
+			waterParent = transform.parent.gameObject;
+		}
+	}
+
+	void Update() {
+		if (Time.time - lastSizzleTime > 0.1f && waterSizzle.isPlaying) {
+			waterSizzle.volume -= Time.deltaTime;
+			if (waterSizzle.volume == 0) {
+				waterSizzle.Stop ();
+			}
+		}
+
+		if ((waterParent != null && waterParent.GetComponent<WaterController>() != null && (waterParent.GetComponent<WaterController>().isPlayingWater || waterParent.GetComponent<WaterController>().canPlayWaterSound) && !waterSound.isPlaying)
+			|| (triggerParent != null && triggerParent.GetComponent<FullWaterButton>() != null && triggerParent.GetComponent<FullWaterButton>().isPlaying && !waterSound.isPlaying)
+			|| (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton>() != null && triggerParent.GetComponent<SquirtWaterButton>().isPlaying && !waterSound.isPlaying)) {
+
+			waterSound.volume = maxSoundValue;
+			if (hasBeenPlayed) {
+				waterSound.UnPause ();
+			} else {
+				waterSound.Play ();
+				hasBeenPlayed = true;
+			}
+		} else {
+			if ((waterParent != null && waterParent.GetComponent<WaterController> () != null && !waterParent.GetComponent<WaterController> ().isPlayingWater)
+				|| (triggerParent != null && triggerParent.GetComponent<FullWaterButton> () != null && !triggerParent.GetComponent<FullWaterButton> ().isPlaying)
+				|| (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton> () != null && !triggerParent.GetComponent<SquirtWaterButton> ().isPlaying)) {
+				waterSound.volume -= 2 * Time.deltaTime;
+				if (waterSound.volume == 0) {
+					waterSound.Pause ();
+				}
+			}
+		}
+	}
 
 	void OnParticleCollision(GameObject other) {
 		if (other.tag == "Heat" || other.tag == "Snow" || other.tag == "BubbleMaker") { //destroy particles that collided with heat/snow box
@@ -43,10 +92,20 @@ public class WaterActions : MonoBehaviour {
 							bm.bubbleList.Add (bubbleClone);
 							bubbleClone.GetComponent<Rigidbody2D> ().velocity = new Vector2 (bm.velocityX, bm.velocityY);
 						}
+					} else if (other.tag == "Heat") {
+						lastSizzleTime = Time.time;
+						if (!waterSizzle.isPlaying) {
+							waterSizzle.volume = 1.0f;
+							waterSizzle.Play ();
+						}
 					}
 				}
 			}
 			gameObject.GetComponent<ParticleSystem> ().SetParticles (particles, numParticles);
 		}
+	}
+
+	public void SetWaterTrigger(GameObject trigger) {
+		triggerParent = trigger;
 	}
 }

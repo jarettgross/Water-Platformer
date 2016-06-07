@@ -10,7 +10,7 @@ public class SquirtWaterButton : MonoBehaviour {
 	public ParticleSystem waterSystem;
 	public AudioClip switchSound;
 
-	private bool isPlaying = false;
+	public bool isPlaying = false;
 	private float timer = 0.0f;
 	public float playTime = 1.0f; //how long to play the squirt
 	
@@ -24,6 +24,7 @@ public class SquirtWaterButton : MonoBehaviour {
 				timer = 0.0f;
 			}
 		}
+		waterSystem.GetComponent<WaterActions> ().SetWaterTrigger (gameObject);
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {

@@ -16,7 +16,7 @@ public class Bubble : MonoBehaviour {
 	private Vector3 center;
 	private Vector3 extents;
 	private Collider2D[] colliders;
-	private float delta = .15f;
+	private float delta = 0.30f;
 
 	void Start () {
 		AudioSource.PlayClipAtPoint (bubbleFormSound, transform.position);
@@ -24,8 +24,8 @@ public class Bubble : MonoBehaviour {
 
 	void Update() {
 		//if the player or a pushBlock is inside the bubble, then pop the bubble
-		center = gameObject.GetComponent<BoxCollider2D> ().bounds.center;
-		extents = gameObject.GetComponent<BoxCollider2D> ().bounds.extents;
+		center = gameObject.GetComponents<BoxCollider2D> ()[0].bounds.center;
+		extents = gameObject.GetComponents<BoxCollider2D> ()[0].bounds.extents;
 		colliders = Physics2D.OverlapAreaAll (new Vector2 (center.x - extents.x + delta, center.y + extents.y - delta), new Vector2 (center.x + extents.x - delta, center.y - extents.y + delta));
 		for (int i = 0; i < colliders.Length; i++) {
 			if (colliders [i].tag == "Player" || colliders[i].tag == "WaterPushBlock") {

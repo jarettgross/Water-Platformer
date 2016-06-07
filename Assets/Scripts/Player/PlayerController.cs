@@ -103,13 +103,13 @@ public class PlayerController : MonoBehaviour {
 	//Turn sprite around depending on arrow key pressed
 	private void flipHorizontal() {
 		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-			Vector3 invertedScale = transform.localScale;
-			invertedScale.x = -transform.localScale.x;
-			transform.localScale = invertedScale;
+			if (transform.localScale.x != -1) {
+				transform.localScale = new Vector3 (-1, 1, 1);
+			}
 		} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-			Vector3 invertedScale = transform.localScale;
-			invertedScale.x = transform.localScale.x;
-			transform.localScale = invertedScale;
+			if (transform.localScale.x != 1) {
+				transform.localScale = new Vector3 (1, 1, 1);
+			}
 		}
 	}
 
