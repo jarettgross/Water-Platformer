@@ -15,7 +15,17 @@ public class ButtonAndSoundManager : MonoBehaviour {
 	public Sprite bgmOnSprite;
 	public Sprite bgmOffSprite;
 
+	void Awake() {
+		if (PlayerPrefs.GetInt("SFXMute") == 1) {
+			MuteSoundEffects ();
+		}
+		if (PlayerPrefs.GetInt("BGMMute") == 1) {
+			MuteBackgroundMusic ();
+		}
+	}
+
 	public void GoToLevelSelect() {
+		PlayerPrefs.Save ();
 		SceneManager.LoadScene ("Level Select");
 	}
 
@@ -30,7 +40,6 @@ public class ButtonAndSoundManager : MonoBehaviour {
 
 	public void MuteSoundEffects() {
 		isSFXMuted = !isSFXMuted;
-
 		if (isSFXMuted) {
 			sfxButton.GetComponent<Image> ().sprite = sfxOnSprite;
 		} else {

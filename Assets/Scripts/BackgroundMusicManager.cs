@@ -8,23 +8,25 @@ public class BackgroundMusicManager : MonoBehaviour {
 	private AudioSource bgm;
 
 	void Awake() {
-		if (!startBackgroundMusic) {
-			gameObject.GetComponent<AudioSource> ().Play ();
-			DontDestroyOnLoad (gameObject);
-			startBackgroundMusic = false;
-		}
+		gameObject.GetComponent<AudioSource> ().Play ();
+		DontDestroyOnLoad (gameObject);
 	}
 
 	void Start() {
-		bas = GameObject.FindGameObjectWithTag ("ButtonsAndSound");
 		bgm = gameObject.GetComponent<AudioSource> ();
 	}
 
+	void OnLevelWasLoaded(int level) {
+		bas = GameObject.FindGameObjectWithTag ("ButtonsAndSound");
+	}
+
 	void Update() {
-		if (bas.GetComponent<ButtonAndSoundManager>().isBGMMuted && bgm.isPlaying) {
-			gameObject.GetComponent<AudioSource> ().Pause ();
-		} else if (!bas.GetComponent<ButtonAndSoundManager>().isBGMMuted && !bgm.isPlaying) {
-			gameObject.GetComponent<AudioSource> ().UnPause ();
+		if (bas != null) {
+			if (bas.GetComponent<ButtonAndSoundManager> ().isBGMMuted && bgm.isPlaying) {
+				gameObject.GetComponent<AudioSource> ().Pause ();
+			} else if (!bas.GetComponent<ButtonAndSoundManager> ().isBGMMuted && !bgm.isPlaying) {
+				gameObject.GetComponent<AudioSource> ().UnPause ();
+			}
 		}
 	}
 }

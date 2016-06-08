@@ -18,14 +18,13 @@ public class LevelManager : MonoBehaviour {
 	private float widthScale = 0.8f;
 	private float heightScale = 0.8f;
 
+	public GameObject bas;
+
 	void Start () {
 		latestLevelBeat = PlayerPrefs.GetInt ("LatestLevelBeat"); //get saved variable
 
 		levelSelectText.GetComponent<RectTransform>().sizeDelta = new Vector2(Screen.width, Screen.height * (1 - heightScale));
 		levelSelectText.GetComponent<RectTransform> ().localPosition = new Vector3 (0, levelSelectText.transform.parent.position.y * heightScale, 0);
-
-		//TODO: change font size of "Levels" header based on screen dpi
-		//levelSelectText.fontSize;
 
 		levelSelectArea.GetComponent<RectTransform> ().localScale = new Vector3 (widthScale, heightScale, 1);
 		levelSelectArea.GetComponent<GridLayoutGroup> ().spacing = new Vector2 (widthScale * Screen.width / 16, heightScale * Screen.height / 15);
@@ -41,7 +40,7 @@ public class LevelManager : MonoBehaviour {
 			buttonCell.GetComponent<Button> ().onClick.AddListener (() => { openLevel(tempI); });
 			buttonCell.transform.SetParent (levelSelectArea, false);
 
-			if (i < latestLevelBeat) {
+			if (i <= latestLevelBeat) {
 				buttonCell.GetComponent<Image> ().sprite = unlockedLevelSprite;
 			} else {
 				buttonCell.GetComponent<Button> ().enabled = false;
@@ -55,7 +54,13 @@ public class LevelManager : MonoBehaviour {
 		}
 	}
 
-	private void openLevel(int levelNumber) {
+	public void openLevel(int levelNumber) {
+		if (bas.GetComponent<ButtonAndSoundManager>().isBGMMuted) {
+			PlayerPrefs.SetInt ("BGMMute", 1);	
+		} else {
+			PlayerPrefs.SetInt ("BGMMute", 0);
+		}
+		PlayerPrefs.Save();
 		SceneManager.LoadScene ("Level " + levelNumber);
 	}
 }
