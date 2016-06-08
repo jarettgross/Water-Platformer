@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour {
         	rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y); //left, right movement
 
 	        //inherit velocity from parent
-	        if (isOnMovingPlatform) {
+			if (transform.parent != null && (isOnMovingPlatform || isOnPushBlock)) {
 	            if (isOnBubble) {
 	                rigidBody.velocity += new Vector2(transform.parent.GetComponent<Rigidbody2D>().velocity.x, 0); //only inherit x velocity from bubble
 	            } else {
@@ -156,7 +156,6 @@ public class PlayerController : MonoBehaviour {
 	void OnTriggerEnter2D(Collider2D collider) {
 		if (collider.tag == "MovingPlatform") { //on moving platform, make platform parent so player moves with platform
 			transform.parent = collider.transform;
-			//transform.SetParent (collider.transform, true);
 			isOnMovingPlatform = true; //for altering player velocity
 			isOnBubble = true;
 		} else if (collider.tag == "Heat") { //in heat area, can't use water
@@ -165,6 +164,12 @@ public class PlayerController : MonoBehaviour {
 			transform.parent = collider.transform;
 			isOnMovingPlatform = true;
 			isOnBubble = true;
+		} else if (collider.tag == "WaterPushBlock") {
+			isOnPushBlock = true;
+			if (transform.parent == null) {
+				transform.parent = collider.gameObject.transform;
+				GetComponent<BoxCollider2D> ().sharedMaterial.friction = 0;
+			}
 		}
 	}
 
@@ -178,6 +183,11 @@ public class PlayerController : MonoBehaviour {
 			transform.parent = null;
 			isOnMovingPlatform = false;
 			isOnBubble = false;
+		} else if (collider.tag == "WaterPushBlock") {
+			isOnPushBlock = false;
+			if (transform.parent == collider.gameObject.transform) {
+				transform.parent = null;
+			}
 		}
 	}
 
@@ -185,16 +195,12 @@ public class PlayerController : MonoBehaviour {
 		if (col.gameObject.tag == "IceBlock") {
 			isOnIceBlock = true;
             GetComponent<Collider2D>().sharedMaterial.friction = 0;
-		} else if (col.gameObject.tag == "WaterPushBlock") {
-			isOnPushBlock = true;
 		}
 	}
 
 	void OnCollisionExit2D(Collision2D col) {
 		if (col.gameObject.tag == "IceBlock") {
 			isOnIceBlock = false;
-		} else if (col.gameObject.tag == "WaterPushBlock") {
-			isOnPushBlock = false;
 		}
 	}
 

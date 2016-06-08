@@ -25,6 +25,7 @@ public class PushBlock : MonoBehaviour {
 					bubbles.Remove (b);
 					if (bubbles.Count == 0) {
 						frictionAmount = originalFriction;
+						transform.parent = null;
 					}
 					break;
 				}
@@ -43,14 +44,19 @@ public class PushBlock : MonoBehaviour {
 			GetComponent<Rigidbody2D> ().freezeRotation = false;
 			frictionAmount = 1.0f;
 			bubbles.Add (col.gameObject);
+			transform.parent = col.gameObject.transform;
 		} else if (col.gameObject.tag == "MovingPlatform") {
 			frictionAmount = 1.0f;
+			transform.parent = col.gameObject.transform;
 		}
 	}
 
 	void OnCollisionExit2D(Collision2D col) {
 		if (col.gameObject.tag == "Bubble" || col.gameObject.tag == "MovingPlatform") {
 			frictionAmount = originalFriction;
+			if (transform.parent == col.gameObject.transform) {
+				transform.parent = null;
+			}
 		}
 	}
 }
