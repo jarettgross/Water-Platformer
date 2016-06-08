@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class PushBlock : MonoBehaviour {
 
@@ -10,8 +11,25 @@ public class PushBlock : MonoBehaviour {
 	public float frictionAmount = 0.75f;
 	private float originalFriction;
 
+	private List<GameObject> bubbles;
+
 	void Start() {
+		bubbles = new List<GameObject> ();
 		originalFriction = frictionAmount;
+	}
+
+	void Update() {
+		if (bubbles.Count > 0) {
+			foreach (GameObject b in bubbles) {
+				if (b == null) {
+					bubbles.Remove (b);
+					if (bubbles.Count == 0) {
+						frictionAmount = originalFriction;
+					}
+					break;
+				}
+			}
+		}
 	}
 
 	void FixedUpdate() {
@@ -24,6 +42,7 @@ public class PushBlock : MonoBehaviour {
 		if (col.gameObject.tag == "Bubble") {
 			GetComponent<Rigidbody2D> ().freezeRotation = false;
 			frictionAmount = 1.0f;
+			bubbles.Add (col.gameObject);
 		} else if (col.gameObject.tag == "MovingPlatform") {
 			frictionAmount = 1.0f;
 		}
