@@ -24,6 +24,7 @@ public class BubbleMaker : MonoBehaviour {
 
 	public List<GameObject> bubbleList;
 
+	public ButtonAndSoundManager bsm;
 
 	void Update () {
 		foreach (GameObject b in bubbleList) {
@@ -35,7 +36,9 @@ public class BubbleMaker : MonoBehaviour {
 				}
 				bubbleList.Remove (b);
 				GameObject bubblePS = (GameObject) Instantiate (b.GetComponent<Bubble> ().bubblePop.gameObject, b.transform.position, Quaternion.identity); //bubble popped, play water particle system
-				AudioSource.PlayClipAtPoint (b.GetComponent<Bubble>().bubblePopSound, b.transform.position);
+				if (!bsm.isSFXMuted) {
+					AudioSource.PlayClipAtPoint (b.GetComponent<Bubble> ().bubblePopSound, b.transform.position);
+				}
 				Destroy(b);
 				Destroy (bubblePS, bubblePS.GetComponent<ParticleSystem> ().startLifetime);
 				break;

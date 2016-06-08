@@ -19,7 +19,9 @@ public class Bubble : MonoBehaviour {
 	private float delta = 0.30f;
 
 	void Start () {
-		AudioSource.PlayClipAtPoint (bubbleFormSound, transform.position);
+		if (!bubbleMakerParent.bsm.isSFXMuted) {
+			AudioSource.PlayClipAtPoint (bubbleFormSound, transform.position);
+		}
 	}
 
 	void Update() {
@@ -37,7 +39,9 @@ public class Bubble : MonoBehaviour {
 				bubbleMakerParent.bubbleList.Remove (gameObject);
 
 				GameObject bubblePS = (GameObject) Instantiate (gameObject.GetComponent<Bubble> ().bubblePop.gameObject, gameObject.transform.position, Quaternion.identity); //bubble popped, play water particle system
-				AudioSource.PlayClipAtPoint (gameObject.GetComponent<Bubble>().bubblePopSound, gameObject.transform.position);
+				if (!bubbleMakerParent.bsm.isSFXMuted) {
+					AudioSource.PlayClipAtPoint (gameObject.GetComponent<Bubble> ().bubblePopSound, gameObject.transform.position);
+				}
 				Destroy (bubblePS, bubblePS.GetComponent<ParticleSystem> ().startLifetime);
 				Destroy (gameObject);
 				break;

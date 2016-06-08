@@ -63,21 +63,16 @@ public class Puddle : MonoBehaviour {
 	public float puddleBottom;
 	public float puddleWidth;
 
-	private float originalTop;
-	private float originalBottom;
-
 	public bool isRefillingPlayer;
 	public float shrinkSpeed;
 
 	private GameObject player;
+	public ButtonAndSoundManager bsm;
 
 	void Start() {
-		originalTop = puddleTop;
-		originalBottom = puddleBottom;
 		SpawnWater(puddleLeft, puddleWidth, puddleTop, puddleBottom);
 		player = GameObject.FindGameObjectWithTag ("Player");
 	}
-
 
 	public void Splash(float xpos, float velocity) {
 		if (xpos >= xpositions[0] && xpos <= xpositions[xpositions.Length - 1]) { //if position is within the bounds of the water

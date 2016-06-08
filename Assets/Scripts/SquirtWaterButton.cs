@@ -12,10 +12,11 @@ public class SquirtWaterButton : MonoBehaviour {
 
 	public bool isPlaying = false;
 	private float timer = 0.0f;
-	public float playTime = 1.0f; //how long to play the squirt
-	
-	// Update is called once per frame
-	void Update () {
+	public float playTime = 1.0f;
+
+	public ButtonAndSoundManager bsm;
+
+	void Update() {
 		if (isPlaying) {
 			timer += Time.deltaTime;
 			if (timer >= playTime) { //play time over, restart timer
@@ -29,7 +30,9 @@ public class SquirtWaterButton : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "Player" || other.tag == "WaterPushBlock") {
-			AudioSource.PlayClipAtPoint (switchSound, transform.position);
+			if (!bsm.isSFXMuted) {
+				AudioSource.PlayClipAtPoint (switchSound, transform.position);
+			}
 			waterSystem.Play ();
 			isPlaying = true;
 		}

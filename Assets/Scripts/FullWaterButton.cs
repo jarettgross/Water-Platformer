@@ -13,6 +13,8 @@ public class FullWaterButton : MonoBehaviour {
 
 	public bool isPlaying = false;
 
+	public ButtonAndSoundManager bsm;
+
 	void Start() {
 		if (playOnStart) {
 			isPlaying = true;
@@ -23,7 +25,9 @@ public class FullWaterButton : MonoBehaviour {
 
 	void OnTriggerEnter2D(Collider2D other) {
 		if (other.tag == "Player" || other.tag == "WaterPushBlock") {
-			AudioSource.PlayClipAtPoint (switchSound, transform.position);
+			if (!bsm.isSFXMuted) {
+				AudioSource.PlayClipAtPoint (switchSound, transform.position);
+			}
 			if (isPlaying) {
 				waterSystem.Stop ();
 			} else {

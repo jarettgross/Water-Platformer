@@ -9,6 +9,8 @@ public class LevelManager : MonoBehaviour {
 	public Text levelSelectText;
 	public Transform levelSelectArea;
 	public GameObject levelButton;
+	public Sprite lockedLevelSprite;
+	public Sprite unlockedLevelSprite;
 
 	private int latestLevelBeat;
 	private const int NUM_LEVELS = 20;
@@ -40,14 +42,15 @@ public class LevelManager : MonoBehaviour {
 			buttonCell.transform.SetParent (levelSelectArea, false);
 
 			if (i < latestLevelBeat) {
-				buttonCell.GetComponent<Button> ().enabled = false;
-				//buttonCell.GetComponent<Image>().sprite = ; TODO: add sprite
+				buttonCell.GetComponent<Image> ().sprite = unlockedLevelSprite;
 			} else {
-				//buttonCell.GetComponent<Image>().sprite = ; TODO: add sprite
+				buttonCell.GetComponent<Button> ().enabled = false;
+				buttonCell.GetComponent<Image> ().sprite = lockedLevelSprite;
 			}
 
 			if (latestLevelBeat == 0 && i == 1) {
 				buttonCell.GetComponent<Button> ().enabled = true;
+				buttonCell.GetComponent<Image> ().sprite = unlockedLevelSprite;
 			}
 		}
 	}

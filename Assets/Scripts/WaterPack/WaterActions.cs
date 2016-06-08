@@ -11,7 +11,7 @@ public class WaterActions : MonoBehaviour {
 	private bool hasBeenPlayed;
 
 	private const float delta = 0.2f; //box containment leeway amount
-	private GameObject waterParent;
+	private GameObject playerParent;
 	private GameObject triggerParent;
 
 	void Start() {
@@ -19,36 +19,48 @@ public class WaterActions : MonoBehaviour {
 		waterSound  = GetComponents<AudioSource> ()[1];
 		maxSoundValue = waterSound.volume;
 		if (transform.parent != null) {
-			waterParent = transform.parent.gameObject;
+			playerParent = transform.parent.gameObject;
 		}
 	}
 
 	void Update() {
-		if (Time.time - lastSizzleTime > 0.1f && waterSizzle.isPlaying) {
-			waterSizzle.volume -= Time.deltaTime;
-			if (waterSizzle.volume == 0) {
-				waterSizzle.Stop ();
-			}
-		}
-
-		if ((waterParent != null && waterParent.GetComponent<WaterController>() != null && (waterParent.GetComponent<WaterController>().isPlayingWater || waterParent.GetComponent<WaterController>().canPlayWaterSound) && !waterSound.isPlaying)
-			|| (triggerParent != null && triggerParent.GetComponent<FullWaterButton>() != null && triggerParent.GetComponent<FullWaterButton>().isPlaying && !waterSound.isPlaying)
-			|| (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton>() != null && triggerParent.GetComponent<SquirtWaterButton>().isPlaying && !waterSound.isPlaying)) {
-
-			waterSound.volume = maxSoundValue;
-			if (hasBeenPlayed) {
-				waterSound.UnPause ();
-			} else {
-				waterSound.Play ();
-				hasBeenPlayed = true;
-			}
+		if (playerParent != null && playerParent.GetComponent<PlayerController> ().bsm.isSFXMuted) {
+			waterSizzle.Stop ();
+			waterSound.Pause ();
+		} else if (triggerParent != null && triggerParent.GetComponent<FullWaterButton> () != null && triggerParent.GetComponent<FullWaterButton> ().bsm.isSFXMuted) {
+			waterSizzle.Stop ();
+			waterSound.Pause ();
+		} else if (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton> () != null && triggerParent.GetComponent<SquirtWaterButton> ().bsm.isSFXMuted) {
+			waterSizzle.Stop ();
+			waterSound.Pause ();
 		} else {
-			if ((waterParent != null && waterParent.GetComponent<WaterController> () != null && !waterParent.GetComponent<WaterController> ().isPlayingWater)
-				|| (triggerParent != null && triggerParent.GetComponent<FullWaterButton> () != null && !triggerParent.GetComponent<FullWaterButton> ().isPlaying)
-				|| (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton> () != null && !triggerParent.GetComponent<SquirtWaterButton> ().isPlaying)) {
-				waterSound.volume -= 2 * Time.deltaTime;
-				if (waterSound.volume == 0) {
-					waterSound.Pause ();
+
+			if (Time.time - lastSizzleTime > 0.1f && waterSizzle.isPlaying) {
+				waterSizzle.volume -= Time.deltaTime;
+				if (waterSizzle.volume == 0) {
+					waterSizzle.Stop ();
+				}
+			}
+
+			if ((playerParent != null && playerParent.GetComponent<WaterController> () != null && (playerParent.GetComponent<WaterController> ().isPlayingWater || playerParent.GetComponent<WaterController> ().canPlayWaterSound) && !waterSound.isPlaying)
+			   || (triggerParent != null && triggerParent.GetComponent<FullWaterButton> () != null && triggerParent.GetComponent<FullWaterButton> ().isPlaying && !waterSound.isPlaying)
+			   || (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton> () != null && triggerParent.GetComponent<SquirtWaterButton> ().isPlaying && !waterSound.isPlaying)) {
+
+				waterSound.volume = maxSoundValue;
+				if (hasBeenPlayed) {
+					waterSound.UnPause ();
+				} else {
+					waterSound.Play ();
+					hasBeenPlayed = true;
+				}
+			} else {
+				if ((playerParent != null && playerParent.GetComponent<WaterController> () != null && !playerParent.GetComponent<WaterController> ().isPlayingWater)
+				   || (triggerParent != null && triggerParent.GetComponent<FullWaterButton> () != null && !triggerParent.GetComponent<FullWaterButton> ().isPlaying)
+				   || (triggerParent != null && triggerParent.GetComponent<SquirtWaterButton> () != null && !triggerParent.GetComponent<SquirtWaterButton> ().isPlaying)) {
+					waterSound.volume -= 2 * Time.deltaTime;
+					if (waterSound.volume == 0) {
+						waterSound.Pause ();
+					}
 				}
 			}
 		}

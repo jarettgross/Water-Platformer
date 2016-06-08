@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour {
 	public bool preventMovement;
 	private bool isRestarting;
 
+	public ButtonAndSoundManager bsm;
+
 	void Start() {
 		rigidBody = GetComponent<Rigidbody2D> ();
 		isOnMovingPlatform = false;
