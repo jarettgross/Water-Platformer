@@ -25,6 +25,7 @@ public class PlayerController : MonoBehaviour {
 	public bool isOnBubble;
 	public bool isInHeatArea;
 	private bool isOnIceBlock;
+	private bool isOnPushBlock;
 
 	public bool preventMovement;
 	private bool isRestarting;
@@ -105,20 +106,20 @@ public class PlayerController : MonoBehaviour {
 	//Turn sprite around depending on arrow key pressed
 	private void flipHorizontal() {
 		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
-			if (transform.localScale.x != -1) {
-				transform.localScale = new Vector3 (-1, 1, 1);
+			if (transform.localScale.x > 0) {
+				transform.localScale = new Vector3 (-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 			}
 		} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
-			if (transform.localScale.x != 1) {
-				transform.localScale = new Vector3 (1, 1, 1);
+			if (transform.localScale.x < 0) {
+				transform.localScale = new Vector3 (transform.localScale.x, transform.localScale.y, transform.localScale.z);
 			}
 		}
 	}
 
 	//Check if grounded so player can jump
 	private bool checkGrounded() {
-		if (isOnMovingPlatform || rigidBody.velocity.y <= 0.001f) {
-
+		if (isOnMovingPlatform || isOnPushBlock || rigidBody.velocity.y <= 0.001f) {
+			
 			//Middle ground point
 			Collider2D[] colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [0].position.x - groundRadius, groundPoints [0].position.y), 
 				new Vector2 (groundPoints [0].position.x + groundRadius, groundPoints [0].position.y - groundRadius), specifyGround);
@@ -184,12 +185,16 @@ public class PlayerController : MonoBehaviour {
 		if (col.gameObject.tag == "IceBlock") {
 			isOnIceBlock = true;
             GetComponent<Collider2D>().sharedMaterial.friction = 0;
+		} else if (col.gameObject.tag == "WaterPushBlock") {
+			isOnPushBlock = true;
 		}
 	}
 
 	void OnCollisionExit2D(Collision2D col) {
 		if (col.gameObject.tag == "IceBlock") {
 			isOnIceBlock = false;
+		} else if (col.gameObject.tag == "WaterPushBlock") {
+			isOnPushBlock = false;
 		}
 	}
 
