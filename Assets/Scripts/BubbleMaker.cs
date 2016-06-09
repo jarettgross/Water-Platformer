@@ -30,8 +30,10 @@ public class BubbleMaker : MonoBehaviour {
 		foreach (GameObject b in bubbleList) {
 			if (Mathf.Abs(b.transform.position.y - transform.position.y) >= maxBubbleHeight) { //then destroy bubble
 				if (b.transform.childCount > 0) { //remove children
-					b.transform.GetChild (0).GetComponent<PlayerController> ().isOnMovingPlatform = false;
-					b.transform.GetChild (0).GetComponent<PlayerController> ().isOnBubble = false;
+					if (b.transform.gameObject.tag == "Player") {
+						b.transform.GetChild (0).GetComponent<PlayerController> ().isOnMovingPlatform = false;
+						b.transform.GetChild (0).GetComponent<PlayerController> ().isOnBubble = false;
+					}
 					b.transform.DetachChildren ();
 				}
 				bubbleList.Remove (b);

@@ -10,12 +10,17 @@ public class PushBlock : MonoBehaviour {
 
 	public float frictionAmount = 0.75f;
 	private float originalFriction;
+	public bool canRotate = true;
 
 	private List<GameObject> bubbles;
 
 	void Start() {
 		bubbles = new List<GameObject> ();
 		originalFriction = frictionAmount;
+
+		if (!canRotate) {
+			GetComponent<Rigidbody2D> ().freezeRotation = true;
+		}
 	}
 
 	void Update() {
@@ -41,7 +46,9 @@ public class PushBlock : MonoBehaviour {
 
 	void OnCollisionEnter2D(Collision2D col) {
 		if (col.gameObject.tag == "Bubble") {
-			GetComponent<Rigidbody2D> ().freezeRotation = false;
+			if (canRotate) {
+				GetComponent<Rigidbody2D> ().freezeRotation = false;
+			}
 			frictionAmount = 1.0f;
 			bubbles.Add (col.gameObject);
 			transform.parent = col.gameObject.transform;

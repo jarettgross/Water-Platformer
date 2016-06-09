@@ -90,11 +90,11 @@ public class PlayerController : MonoBehaviour {
             }
 
             if (Input.GetKey(KeyCode.D)) {
-                rigidBody.velocity = curVel;
+				rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             }
 
             if (Input.GetKey(KeyCode.A)) {
-                rigidBody.velocity = curVel;
+				rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             }
 
             if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow)) {
@@ -166,7 +166,7 @@ public class PlayerController : MonoBehaviour {
 			isOnBubble = true;
 		} else if (collider.tag == "WaterPushBlock") {
 			isOnPushBlock = true;
-			if (transform.parent == null) {
+			if (transform.parent == null && collider.gameObject.transform.parent != null) {
 				transform.parent = collider.gameObject.transform;
 				GetComponent<BoxCollider2D> ().sharedMaterial.friction = 0;
 			}

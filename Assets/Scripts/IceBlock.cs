@@ -25,7 +25,6 @@ public class IceBlock : MonoBehaviour {
 		if (tempScale.y < minIceWidth) {
 			tempScale.y = 0.0f;
 		}
-		//tempScale.y -= Time.fixedDeltaTime * shrinkSpeed;
 		gameObject.transform.localScale = tempScale;
 	}
 }
