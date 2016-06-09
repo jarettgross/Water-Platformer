@@ -81,7 +81,7 @@ public class PlayerController : MonoBehaviour {
 	        }
 		} else if (isOnIceBlock) {
             Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
-            curVel = Vector2.Lerp(curVel, vel, 3*Time.deltaTime);
+            curVel = Vector2.Lerp(rigidBody.velocity, vel, 3*Time.deltaTime);
             if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
                 isGrounded = false;
                 rigidBody.AddForce(new Vector2(0, jumpForce));
