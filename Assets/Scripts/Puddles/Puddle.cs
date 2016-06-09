@@ -55,7 +55,7 @@ public class Puddle : MonoBehaviour {
 	public float springconstant = 0.02f;
 	public float damping = 0.04f;
 	public float spread = 0.05f;
-	const float z = -1f;
+	const float z = 1f;
 
 	//water properties
 	public float puddleTop;
@@ -185,9 +185,10 @@ public class Puddle : MonoBehaviour {
 			colliders[i].GetComponent<BoxCollider2D>().isTrigger = true;
 			colliders[i].AddComponent<WaterDetector>();
 		}
+		gameObject.GetComponent<BoxCollider2D>().size = new Vector2(Width, colliders[0].GetComponent<BoxCollider2D>().size.y);
 		gameObject.GetComponent<BoxCollider2D> ().offset = 
 			new Vector2 ((colliders [0].transform.position.x + colliders [edgecount - 1].transform.position.x) / 2 - gameObject.transform.position.x, 
-				0);
+				(colliders[0].transform.localPosition.y));
 	}
 
 	//Same as the code from in the meshes before, set the new mesh positions
@@ -257,8 +258,8 @@ public class Puddle : MonoBehaviour {
 			player.GetComponent<WaterController> ().IncreaseWaterAmount (); //increase player water
 
 			//Set collider properties of water
-			gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(gameObject.GetComponent<BoxCollider2D>().offset.x, -(originalTop + meshobjects[0].transform.localPosition.y));
-			gameObject.GetComponent<BoxCollider2D>().size = new Vector2(puddleWidth, puddleTop - puddleBottom);
+			gameObject.GetComponent<BoxCollider2D>().offset = new Vector2(gameObject.GetComponent<BoxCollider2D>().offset.x, (colliders[0].transform.localPosition.y));
+			gameObject.GetComponent<BoxCollider2D>().size = new Vector2(puddleWidth, GetComponent<BoxCollider2D>().size.y);
 
 			for (int i = 0; i < colliders.Length; i++) {
 				colliders [i].transform.position = new Vector3 (puddleLeft + puddleWidth * (i + 0.5f) / (Mathf.RoundToInt(puddleWidth) * 5), puddleTop - 0.5f, 0);
@@ -270,13 +271,13 @@ public class Puddle : MonoBehaviour {
 	}
 
 	void OnTriggerEnter2D(Collider2D other) {
-		if (other.tag == "Player" && GetComponent<BoxCollider2D>().name == "MainPuddleCollider") { //player entered puddle, increase water amount if needed
+		if (other.tag == "Player") { //player entered puddle, increase water amount if needed
 			isRefillingPlayer = true;
 		}
 	}
 
 	void OnTriggerExit2D(Collider2D other) {
-		if (other.tag == "Player" && GetComponent<BoxCollider2D>().name == "MainPuddleCollider") { //player left puddle
+		if (other.tag == "Player") { //player left puddle
 			isRefillingPlayer = false;
 		}
 	}

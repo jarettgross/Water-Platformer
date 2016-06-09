@@ -18,7 +18,7 @@ public class WaterActions : MonoBehaviour {
 		waterSizzle = GetComponents<AudioSource> ()[0];
 		waterSound  = GetComponents<AudioSource> ()[1];
 		maxSoundValue = waterSound.volume;
-		if (transform.parent != null) {
+		if (transform.parent != null && transform.parent.tag == "Player") {
 			playerParent = transform.parent.gameObject;
 		}
 	}
