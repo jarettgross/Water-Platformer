@@ -33,6 +33,10 @@ public class LevelFinish : MonoBehaviour {
 	IEnumerator ChangeLevel() {
 		float fadeTime = GameObject.Find ("FadeManager").GetComponent<FadeManager> ().BeginFade (1);
 		yield return new WaitForSeconds (fadeTime);
-		SceneManager.LoadScene ("Level " + nextLevel);
+		if (nextLevel == 21) {
+			SceneManager.LoadScene ("Level Select");
+		} else {
+			SceneManager.LoadScene ("Level " + nextLevel);
+		}
 	}
 }

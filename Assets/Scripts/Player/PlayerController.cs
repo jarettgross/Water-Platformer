@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour {
 	public bool isOnMovingPlatform;
 	public bool isOnBubble;
 	public bool isInHeatArea;
+	public bool isInSnowArea;
 	private bool isOnIceBlock;
 	private bool isOnPushBlock;
 
@@ -170,6 +171,8 @@ public class PlayerController : MonoBehaviour {
 				transform.parent = collider.gameObject.transform;
 				GetComponent<BoxCollider2D> ().sharedMaterial.friction = 0;
 			}
+		} else if (collider.tag == "Snow") {
+			isInSnowArea = true;
 		}
 	}
 
@@ -188,6 +191,8 @@ public class PlayerController : MonoBehaviour {
 			if (transform.parent == collider.gameObject.transform) {
 				transform.parent = null;
 			}
+		} else if (collider.tag == "Snow") {
+			isInSnowArea = false;
 		}
 	}
 

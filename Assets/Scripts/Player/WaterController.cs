@@ -58,7 +58,8 @@ public class WaterController : MonoBehaviour {
 			Collider2D[] colliders = Physics2D.OverlapCircleAll (waterPack.transform.position, waterOverlapRadius);
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject && colliders [i].gameObject != waterPack.gameObject
-					&& colliders[i].gameObject.GetComponent<BubbleMaker>() == null && colliders[i].gameObject.tag != "Puddle") {
+					&& colliders[i].gameObject.GetComponent<BubbleMaker>() == null && colliders[i].gameObject.tag != "Puddle"
+					&& !gameObject.GetComponent<PlayerController>().isInSnowArea) {
 					isOverlappingObj = true;
 					isPlayingWater = false;
 					canPlayWaterSound = true;
