@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour {
 			}
 		} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
 			if (transform.localScale.x < 0) {
-				transform.localScale = new Vector3 (transform.localScale.x, transform.localScale.y, transform.localScale.z);
+				transform.localScale = new Vector3 (-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 			}
 		}
 	}
@@ -127,6 +127,7 @@ public class PlayerController : MonoBehaviour {
 
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject) { //found collision with ground, allow jumping
+					if (colliders[i].tag == "IceBlock") isOnIceBlock = true;
 					return true;
 				}
 			}
@@ -137,6 +138,7 @@ public class PlayerController : MonoBehaviour {
 
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject) {
+					if (colliders[i].tag == "IceBlock") isOnIceBlock = true;
 					return true;
 				}
 			}
@@ -147,6 +149,7 @@ public class PlayerController : MonoBehaviour {
 
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject) {
+					if (colliders[i].tag == "IceBlock") isOnIceBlock = true;
 					return true;
 				}
 			}
@@ -173,6 +176,9 @@ public class PlayerController : MonoBehaviour {
 			}
 		} else if (collider.tag == "Snow") {
 			isInSnowArea = true;
+		} else if (collider.tag == "Spikes") {
+			preventMovement = true;
+			StartCoroutine (RestartLevel ());
 		}
 	}
 

@@ -64,6 +64,7 @@ public class WaterController : MonoBehaviour {
 					isPlayingWater = false;
 					canPlayWaterSound = true;
 					waterPack.Stop ();
+					Debug.Log ("hereee");
 				}
 			}
 
@@ -88,13 +89,6 @@ public class WaterController : MonoBehaviour {
 				waterPack.transform.localPosition = new Vector3 (0, waterPackPos, 0);
 				if (!isOverlappingObj) waterPack.Play ();
 				oppWaterForce = new Vector2 (0, -VERTICAL_FORCE);
-
-			} else if (Input.GetKeyDown (KeyCode.DownArrow)) {
-//				isArrowKeyDown = true;
-//				waterPack.transform.eulerAngles = new Vector3(90, 90, 0);
-//				waterPack.transform.localPosition = new Vector3 (0, -waterPackPos, 0);
-//				waterPack.Play ();
-//				oppWaterForce = new Vector2 (0, VERTICAL_FORCE);
 			}
 
 			if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow)) { //using arrows, lower water amount
@@ -113,6 +107,11 @@ public class WaterController : MonoBehaviour {
 					waterPack.Stop ();
 				}
 			}
+		} else {
+			oppWaterForce = new Vector2 (0, 0);
+			waterPack.Stop ();
+			isPlayingWater = false;
+			canPlayWaterSound = false;
 		}
 
 		if (!(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow))) { //not using arrows, stop water animation

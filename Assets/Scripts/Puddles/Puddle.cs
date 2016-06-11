@@ -62,7 +62,6 @@ public class Puddle : MonoBehaviour {
 	public float puddleLeft;
 	public float puddleBottom;
 	public float puddleWidth;
-	private float originalTop;
 
 	public bool isRefillingPlayer;
 	public float shrinkSpeed;
@@ -73,7 +72,6 @@ public class Puddle : MonoBehaviour {
 	void Start() {
 		SpawnWater(puddleLeft, puddleWidth, puddleTop, puddleBottom);
 		player = GameObject.FindGameObjectWithTag ("Player");
-		originalTop = puddleTop;
 	}
 
 	public void Splash(float xpos, float velocity) {
