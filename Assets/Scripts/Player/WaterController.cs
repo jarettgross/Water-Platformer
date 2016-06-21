@@ -64,7 +64,6 @@ public class WaterController : MonoBehaviour {
 					isPlayingWater = false;
 					canPlayWaterSound = true;
 					waterPack.Stop ();
-					Debug.Log ("hereee");
 				}
 			}
 

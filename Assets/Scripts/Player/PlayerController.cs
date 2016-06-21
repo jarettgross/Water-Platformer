@@ -47,6 +47,13 @@ public class PlayerController : MonoBehaviour {
 			isRestarting = true;
 		}
 
+		if (Input.GetKeyDown(KeyCode.D)) {
+			GetComponent<SpriteRenderer> ().flipX = (transform.localScale.x > 0);
+		}
+		if (Input.GetKeyDown(KeyCode.A)) {
+			GetComponent<SpriteRenderer> ().flipX = GetComponent<SpriteRenderer> ().flipX = !(transform.localScale.x > 0);
+		}
+
 		if (!preventMovement && !isRestarting) {
 			isGrounded = checkGrounded ();
 			handleMovement (Input.GetAxis ("Horizontal"));
