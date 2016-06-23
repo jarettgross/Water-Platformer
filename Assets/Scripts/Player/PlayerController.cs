@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
 	private bool isRestarting;
 
 	public ButtonAndSoundManager bsm;
+	public AudioClip jumpSound;
 
 	void Start() {
 		rigidBody = GetComponent<Rigidbody2D> ();
@@ -39,6 +40,11 @@ public class PlayerController : MonoBehaviour {
 		isOnBubble = false;
 		isInHeatArea = false;
 		isOnIceBlock = false;
+
+		groundPoints [0].localPosition = new Vector3 (0, -0.43f, 0);
+		groundPoints [1].localPosition = new Vector3 (0.225f, -0.43f, 0);
+		groundPoints [2].localPosition = new Vector3 (-0.225f, -0.43f, 0);
+
 	}
 
 
@@ -82,6 +88,7 @@ public class PlayerController : MonoBehaviour {
 	        }
 
 	        if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
+				AudioSource.PlayClipAtPoint(jumpSound, transform.position);
 	            isGrounded = false;
 	            rigidBody.AddForce(new Vector2(0, jumpForce));
 	        } else {
@@ -91,6 +98,7 @@ public class PlayerController : MonoBehaviour {
             Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             curVel = Vector2.Lerp(rigidBody.velocity, vel, 3*Time.deltaTime);
             if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
+				AudioSource.PlayClipAtPoint(jumpSound, transform.position);
                 isGrounded = false;
                 rigidBody.AddForce(new Vector2(0, jumpForce));
             } else {

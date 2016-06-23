@@ -12,7 +12,7 @@ public class SmoothCamera2D : MonoBehaviour {
 	void Start() {
 		if (target) { //player is not null, set camera to location of player
 			Vector3 point = Camera.main.WorldToViewportPoint(target.position); 
-			transform.position += target.position - Camera.main.ViewportToWorldPoint (new Vector3 (0.5f, 0.5f, point.z));
+			//transform.position += target.position - Camera.main.ViewportToWorldPoint (new Vector3 (0.5f, 0.5f, point.z));
 		}
 	}
 

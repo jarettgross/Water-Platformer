@@ -16,7 +16,8 @@ public class WaterController : MonoBehaviour {
 	private const int HORIZ_FORCE = 150;
 	private const int VERTICAL_FORCE = 50;
 
-	private const float waterPackPos = 0.53f; //position of waterPack relative to the player
+	private const float waterPackPos = 0.28f; //position of waterPack relative to the player
+	private const float waterPackPosTop = 0.43f; //position of waterPack relative to the player
 
 	private Vector2 oppWaterForce = new Vector2(0, 0);
 	private bool isArrowKeyDown = false;
@@ -85,7 +86,7 @@ public class WaterController : MonoBehaviour {
 			} else if (Input.GetKeyDown (KeyCode.UpArrow)) {
 				isArrowKeyDown = true;
 				waterPack.transform.eulerAngles = new Vector3 (-90, 90, 0);
-				waterPack.transform.localPosition = new Vector3 (0, waterPackPos, 0);
+				waterPack.transform.localPosition = new Vector3 (0, waterPackPosTop, 0);
 				if (!isOverlappingObj) waterPack.Play ();
 				oppWaterForce = new Vector2 (0, -VERTICAL_FORCE);
 			}
