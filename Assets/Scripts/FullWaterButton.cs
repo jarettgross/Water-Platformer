@@ -15,6 +15,9 @@ public class FullWaterButton : MonoBehaviour {
 
 	public ButtonAndSoundManager bsm;
 
+	public Sprite buttonUp;
+	public Sprite buttonDown;
+
 	void Start() {
 		if (playOnStart) {
 			isPlaying = true;
@@ -30,8 +33,10 @@ public class FullWaterButton : MonoBehaviour {
 			}
 			if (isPlaying) {
 				waterSystem.Stop ();
+				GetComponent<SpriteRenderer> ().sprite = buttonUp;
 			} else {
 				waterSystem.Play ();
+				GetComponent<SpriteRenderer> ().sprite = buttonDown;
 			}
 			isPlaying = !isPlaying;
 		}

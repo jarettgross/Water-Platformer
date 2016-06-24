@@ -16,14 +16,20 @@ public class SquirtWaterButton : MonoBehaviour {
 
 	public ButtonAndSoundManager bsm;
 
+	public Sprite buttonUp;
+	public Sprite buttonDown;
+
 	void Update() {
 		if (isPlaying) {
+			GetComponent<SpriteRenderer> ().sprite = buttonDown;
 			timer += Time.deltaTime;
 			if (timer >= playTime) { //play time over, restart timer
 				waterSystem.Stop ();
 				isPlaying = false;
 				timer = 0.0f;
 			}
+		} else {
+			GetComponent<SpriteRenderer> ().sprite = buttonUp;
 		}
 		waterSystem.GetComponent<WaterActions> ().SetWaterTrigger (gameObject);
 	}
