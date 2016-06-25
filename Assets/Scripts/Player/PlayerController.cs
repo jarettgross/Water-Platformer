@@ -88,7 +88,9 @@ public class PlayerController : MonoBehaviour {
 	        }
 
 	        if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
-				AudioSource.PlayClipAtPoint(jumpSound, transform.position);
+				if (!bsm.isSFXMuted) {
+					AudioSource.PlayClipAtPoint (jumpSound, transform.position);
+				}
 	            isGrounded = false;
 	            rigidBody.AddForce(new Vector2(0, jumpForce));
 	        } else {
@@ -98,7 +100,9 @@ public class PlayerController : MonoBehaviour {
             Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             curVel = Vector2.Lerp(rigidBody.velocity, vel, 3*Time.deltaTime);
             if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
-				AudioSource.PlayClipAtPoint(jumpSound, transform.position);
+				if (!bsm.isSFXMuted) {
+					AudioSource.PlayClipAtPoint (jumpSound, transform.position);
+				}
                 isGrounded = false;
                 rigidBody.AddForce(new Vector2(0, jumpForce));
             } else {
@@ -231,6 +235,18 @@ public class PlayerController : MonoBehaviour {
 	}
 
 	IEnumerator RestartLevel() {
+		if (GameObject.Find("ButtonAndSoundManager").GetComponent<ButtonAndSoundManager>().isBGMMuted) {
+			PlayerPrefs.SetInt ("BGMMute", 1);	
+		} else {
+			PlayerPrefs.SetInt ("BGMMute", 0);
+		}
+		if (GameObject.Find("ButtonAndSoundManager").GetComponent<ButtonAndSoundManager>().isSFXMuted) {
+			PlayerPrefs.SetInt ("SFXMute", 1);
+		} else {
+			PlayerPrefs.SetInt ("SFXMute", 0);
+		}
+		PlayerPrefs.Save ();
+
 		float fadeTime = GameObject.Find ("FadeManager").GetComponent<FadeManager> ().BeginFade (1, 1);
 		yield return new WaitForSeconds (fadeTime);
 		SceneManager.LoadScene(SceneManager.GetActiveScene ().name);
