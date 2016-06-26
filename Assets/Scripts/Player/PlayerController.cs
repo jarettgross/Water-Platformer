@@ -41,9 +41,9 @@ public class PlayerController : MonoBehaviour {
 		isInHeatArea = false;
 		isOnIceBlock = false;
 
-		groundPoints [0].localPosition = new Vector3 (0, -0.43f, 0);
-		groundPoints [1].localPosition = new Vector3 (0.225f, -0.43f, 0);
-		groundPoints [2].localPosition = new Vector3 (-0.225f, -0.43f, 0);
+		//groundPoints [0].localPosition = new Vector3 (0, -0.43f, 0);
+		//groundPoints [1].localPosition = new Vector3 (0.225f, -0.43f, 0);
+		//groundPoints [2].localPosition = new Vector3 (-0.225f, -0.43f, 0);
 
 	}
 
@@ -152,7 +152,7 @@ public class PlayerController : MonoBehaviour {
 			}
 
 			//Right ground point
-			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [1].position.x, groundPoints [1].position.y), 
+			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [1].position.x + groundRadius * 6, groundPoints [1].position.y), 
 				new Vector2 (groundPoints [1].position.x - groundRadius, groundPoints [1].position.y - groundRadius), specifyGround);
 
 			for (int i = 0; i < colliders.Length; i++) {
@@ -163,7 +163,7 @@ public class PlayerController : MonoBehaviour {
 			}
 
 			//Left ground point
-			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [2].position.x, groundPoints [2].position.y), 
+			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [2].position.x - groundRadius * 6, groundPoints [2].position.y), 
 				new Vector2 (groundPoints [2].position.x + groundRadius, groundPoints [2].position.y - groundRadius), specifyGround);
 
 			for (int i = 0; i < colliders.Length; i++) {

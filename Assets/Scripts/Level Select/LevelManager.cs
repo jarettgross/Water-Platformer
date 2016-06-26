@@ -40,7 +40,7 @@ public class LevelManager : MonoBehaviour {
 			buttonCell.GetComponent<Button> ().onClick.AddListener (() => { openLevel(tempI); });
 			buttonCell.transform.SetParent (levelSelectArea, false);
 
-			if (i <= latestLevelBeat) {
+			if (i <= (latestLevelBeat + 1)) {
 				buttonCell.GetComponent<Image> ().sprite = unlockedLevelSprite;
 			} else {
 				buttonCell.GetComponent<Button> ().enabled = false;

@@ -26,8 +26,8 @@ public class Bubble : MonoBehaviour {
 
 	void Update() {
 		//if the player or a pushBlock is inside the bubble, then pop the bubble
-		center = gameObject.GetComponents<BoxCollider2D> ()[0].bounds.center;
-		extents = gameObject.GetComponents<BoxCollider2D> ()[0].bounds.extents;
+		center = gameObject.GetComponents<CircleCollider2D> ()[0].bounds.center;
+		extents = gameObject.GetComponents<CircleCollider2D> ()[0].bounds.extents;
 		colliders = Physics2D.OverlapAreaAll (new Vector2 (center.x - extents.x + delta, center.y + extents.y - delta), new Vector2 (center.x + extents.x - delta, center.y - extents.y + delta));
 		for (int i = 0; i < colliders.Length; i++) {
 			if (colliders [i].tag == "Player" || colliders[i].tag == "WaterPushBlock") {
