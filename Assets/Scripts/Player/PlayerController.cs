@@ -62,10 +62,18 @@ public class PlayerController : MonoBehaviour {
 			GetComponent<SpriteRenderer> ().flipX = GetComponent<SpriteRenderer> ().flipX = !(transform.localScale.x > 0);
 		}
 
-		if (transform.localScale.x == 1 && GetComponent<SpriteRenderer> ().flipX || transform.localScale.x == -1 && !GetComponent<SpriteRenderer> ().flipX) {
+		if ((transform.localScale.x == 1 && GetComponent<SpriteRenderer> ().flipX)) {
 			groundPoints [1].localPosition = new Vector3 (rightGroundPos, groundPoints [1].localPosition.y, 0);
 			groundPoints [2].localPosition = new Vector3 (leftGroundPos, groundPoints [2].localPosition.y, 0);
 			isGroundPosFlipped = false;
+		} else if (transform.localScale.x == -1 && !GetComponent<SpriteRenderer> ().flipX) {
+			groundPoints [1].localPosition = new Vector3 (-rightGroundPos, groundPoints [1].localPosition.y, 0);
+			groundPoints [2].localPosition = new Vector3 (-leftGroundPos, groundPoints [2].localPosition.y, 0);
+			isGroundPosFlipped = false;
+		} else if (transform.localScale.x == -1 && GetComponent<SpriteRenderer> ().flipX) {
+			groundPoints [1].localPosition = new Vector3 (-leftGroundPos, groundPoints [1].localPosition.y, 0);
+			groundPoints [2].localPosition = new Vector3 (-rightGroundPos, groundPoints [2].localPosition.y, 0);
+			isGroundPosFlipped = true;
 		} else {
 			groundPoints [1].localPosition = new Vector3 (leftGroundPos, groundPoints [1].localPosition.y, 0);
 			groundPoints [2].localPosition = new Vector3 (rightGroundPos, groundPoints [2].localPosition.y, 0);
