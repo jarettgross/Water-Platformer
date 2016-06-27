@@ -24,7 +24,7 @@ public class WaterController : MonoBehaviour {
 	public bool isPlayingWater = false;
 	public bool canPlayWaterSound;
 
-	public float waterIncreaseRate = 2; //how quickly to refill player's water when in a puddle
+	public float waterIncreaseRate = 1.4f; //how quickly to refill player's water when in a puddle
 	public float waterOverlapRadius = 0.07f;
 
 	public bool manualSetWaterAmount;
@@ -43,6 +43,7 @@ public class WaterController : MonoBehaviour {
 
 	void Update() {
 		handleWater ();
+		waterAmountSlider.GetComponentInChildren<Text> ().text = Mathf.Ceil(waterRemaining).ToString ();
 	}
 
 	void FixedUpdate() {

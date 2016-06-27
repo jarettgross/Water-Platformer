@@ -13,7 +13,11 @@ public class PlayerController : MonoBehaviour {
 	public float movementSpeed;
 
 	public Transform[] groundPoints; //location where player touches ground
+	private float leftGroundPos;
+	private float rightGroundPos;
+	private bool isGroundPosFlipped;
 	public float groundRadius; //radius of point for player touching ground
+	private float yGroundRadius = 0.01f;
 	private bool isGrounded;
 	public float jumpForce;
 
@@ -41,10 +45,8 @@ public class PlayerController : MonoBehaviour {
 		isInHeatArea = false;
 		isOnIceBlock = false;
 
-		//groundPoints [0].localPosition = new Vector3 (0, -0.43f, 0);
-		//groundPoints [1].localPosition = new Vector3 (0.225f, -0.43f, 0);
-		//groundPoints [2].localPosition = new Vector3 (-0.225f, -0.43f, 0);
-
+		rightGroundPos = groundPoints [1].localPosition.x;
+		leftGroundPos = groundPoints [2].localPosition.x;
 	}
 
 
@@ -58,6 +60,16 @@ public class PlayerController : MonoBehaviour {
 		}
 		if (Input.GetKeyDown(KeyCode.A)) {
 			GetComponent<SpriteRenderer> ().flipX = GetComponent<SpriteRenderer> ().flipX = !(transform.localScale.x > 0);
+		}
+
+		if (transform.localScale.x == 1 && GetComponent<SpriteRenderer> ().flipX || transform.localScale.x == -1 && !GetComponent<SpriteRenderer> ().flipX) {
+			groundPoints [1].localPosition = new Vector3 (rightGroundPos, groundPoints [1].localPosition.y, 0);
+			groundPoints [2].localPosition = new Vector3 (leftGroundPos, groundPoints [2].localPosition.y, 0);
+			isGroundPosFlipped = false;
+		} else {
+			groundPoints [1].localPosition = new Vector3 (leftGroundPos, groundPoints [1].localPosition.y, 0);
+			groundPoints [2].localPosition = new Vector3 (rightGroundPos, groundPoints [2].localPosition.y, 0);
+			isGroundPosFlipped = true;
 		}
 
 		if (!preventMovement && !isRestarting) {
@@ -87,7 +99,7 @@ public class PlayerController : MonoBehaviour {
 	            }
 	        }
 
-	        if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
+			if (isGrounded && Input.GetKeyDown(KeyCode.Space)) { //jumping
 				if (!bsm.isSFXMuted) {
 					AudioSource.PlayClipAtPoint (jumpSound, transform.position);
 				}
@@ -99,7 +111,7 @@ public class PlayerController : MonoBehaviour {
 		} else if (isOnIceBlock) {
             Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             curVel = Vector2.Lerp(rigidBody.velocity, vel, 3*Time.deltaTime);
-            if (isGrounded && (Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W))) { //jumping
+			if (isGrounded && Input.GetKeyDown(KeyCode.Space)) { //jumping
 				if (!bsm.isSFXMuted) {
 					AudioSource.PlayClipAtPoint (jumpSound, transform.position);
 				}
@@ -151,9 +163,14 @@ public class PlayerController : MonoBehaviour {
 				}
 			}
 
+			if (isGroundPosFlipped) {
+				groundRadius = -0.01f;
+			} else {
+				groundRadius = 0.01f;
+			}
 			//Right ground point
-			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [1].position.x + groundRadius * 6, groundPoints [1].position.y), 
-				new Vector2 (groundPoints [1].position.x - groundRadius, groundPoints [1].position.y - groundRadius), specifyGround);
+			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [1].position.x, groundPoints [1].position.y), 
+				new Vector2 (groundPoints [1].position.x - groundRadius, groundPoints [1].position.y - yGroundRadius), specifyGround);
 
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject) {
@@ -163,8 +180,8 @@ public class PlayerController : MonoBehaviour {
 			}
 
 			//Left ground point
-			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [2].position.x - groundRadius * 6, groundPoints [2].position.y), 
-				new Vector2 (groundPoints [2].position.x + groundRadius, groundPoints [2].position.y - groundRadius), specifyGround);
+			colliders = Physics2D.OverlapAreaAll (new Vector2 (groundPoints [2].position.x, groundPoints [2].position.y), 
+				new Vector2 (groundPoints [2].position.x + groundRadius, groundPoints [2].position.y - yGroundRadius), specifyGround);
 
 			for (int i = 0; i < colliders.Length; i++) {
 				if (colliders [i].gameObject != gameObject) {

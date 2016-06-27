@@ -19,6 +19,7 @@ public class LevelManager : MonoBehaviour {
 	private float heightScale = 0.8f;
 
 	public GameObject bas;
+	public Font buttonFont;
 
 	void Start () {
 		latestLevelBeat = PlayerPrefs.GetInt ("LatestLevelBeat"); //get saved variable
@@ -34,6 +35,8 @@ public class LevelManager : MonoBehaviour {
 		for (int i = 1; i <= NUM_LEVELS; i++) {
 			GameObject buttonCell = Instantiate (levelButton) as GameObject;
 			buttonCell.name = "Level_" + i;
+			buttonCell.GetComponentInChildren<Text> ().color = new Color (0, 0, 0);
+			buttonCell.GetComponentInChildren<Text> ().font = buttonFont;
 			buttonCell.GetComponentInChildren<Text> ().text = i.ToString();
 
 			int tempI = i;
