@@ -70,21 +70,21 @@ public class WaterController : MonoBehaviour {
 			}
 
 			//shoot water in the direction specified by arrows keys
-			if (Input.GetKeyDown (KeyCode.RightArrow)) {
+			if (GetComponent<PlayerController>().hInput.GetKeyDown("shoot_right")) {
 				isArrowKeyDown = true;
 				waterPack.transform.eulerAngles = new Vector3 (0, 90, 0); //set water angle
 				waterPack.transform.localPosition = new Vector3 (waterPackPos, 0, 0); //set water location relative to player
 				if (!isOverlappingObj) waterPack.Play ();
 				oppWaterForce = new Vector2 (-HORIZ_FORCE, 0); //set player force from water
 
-			} else if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+			} else if (GetComponent<PlayerController>().hInput.GetKeyDown("shoot_left")) {
 				isArrowKeyDown = true;
 				waterPack.transform.eulerAngles = new Vector3 (0, -90, 0);
 				waterPack.transform.localPosition = new Vector3 (waterPackPos, 0, 0);
 				if (!isOverlappingObj) waterPack.Play ();
 				oppWaterForce = new Vector2 (HORIZ_FORCE, 0);
 
-			} else if (Input.GetKeyDown (KeyCode.UpArrow)) {
+			} else if (GetComponent<PlayerController>().hInput.GetKeyDown("shoot_up")) {
 				isArrowKeyDown = true;
 				waterPack.transform.eulerAngles = new Vector3 (-90, 90, 0);
 				waterPack.transform.localPosition = new Vector3 (0, waterPackPosTop, 0);
@@ -92,7 +92,7 @@ public class WaterController : MonoBehaviour {
 				oppWaterForce = new Vector2 (0, -VERTICAL_FORCE);
 			}
 
-			if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow)) { //using arrows, lower water amount
+			if (GetComponent<PlayerController>().hInput.GetKey("shoot_right") || GetComponent<PlayerController>().hInput.GetKey("shoot_left") || GetComponent<PlayerController>().hInput.GetKey("shoot_up")) { //using arrows, lower water amount
 				if (!isOverlappingObj && !isPlayingWater) { //play water if not already
 					waterPack.Play ();
 					isPlayingWater = true;
@@ -115,7 +115,7 @@ public class WaterController : MonoBehaviour {
 			canPlayWaterSound = false;
 		}
 
-		if (!(Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow))) { //not using arrows, stop water animation
+		if (!(GetComponent<PlayerController>().hInput.GetKey("shoot_right") || GetComponent<PlayerController>().hInput.GetKey("shoot_left") || GetComponent<PlayerController>().hInput.GetKey("shoot_up"))) { //not using arrows, stop water animation
 			isArrowKeyDown = false;
 			isPlayingWater = false;
 			canPlayWaterSound = false;

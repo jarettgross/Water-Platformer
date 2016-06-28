@@ -1,0 +1,289 @@
+using UnityEngine;
+using System.Collections;
+using System;
+
+// Generated using Hard Shell Studios - Input Manager.
+// All freedom is granted to this user to use, adapt, and sell software of which this script is used. 
+// Visit www.hardshellstudios.com for information about myself, things i've released and how you can support me :)
+
+public class hInput : MonoBehaviour
+{
+
+    hardInput inputManager;
+
+    public hardKey[] inputs = new hardKey[] {
+
+        new hardKey("Forward", KeyCode.W, KeyCode.None, 0),
+        new hardKey("Backward", KeyCode.S, KeyCode.None, 0),
+        new hardKey("Left", KeyCode.A, KeyCode.None, 0),
+        new hardKey("Right", KeyCode.D, KeyCode.None, 0),
+
+        new hardKey("Jump", KeyCode.Space, KeyCode.None, 0),
+        new hardKey("Menu", KeyCode.Tab, KeyCode.Escape, 0),
+
+        new hardKey("MouseX", KeyCode.None, KeyCode.None, 3),
+        new hardKey("MouseY", KeyCode.None, KeyCode.None, 4)
+
+
+        };
+
+    string currentRebind = "";
+    bool replaceSecond = false;
+    hardInputUI currentBindFrom;
+    bool started = false;
+
+    void Awake()
+    {
+        if (!started)
+        {
+            inputManager = GameObject.FindObjectOfType<hardInput>();
+        }
+
+    }
+
+    public bool GetButtonDown(string buttonName)
+    {
+        int value = Check_IsValid(buttonName);
+        if (value != 9999)
+        {
+            if (Input.GetKeyDown(inputs[value].keyInput) || Input.GetKeyDown(inputs[value].keyInput2))
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public bool GetButton(string buttonName)
+    {
+        int value = Check_IsValid(buttonName);
+        if (value != 9999)
+        {
+            if (Input.GetKey(inputs[value].keyInput) || Input.GetKey(inputs[value].keyInput2) )
+                return true;
+            else
+                return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public float GetAxis(string keyName, string keyName2, float gravity)
+    {
+        int value = Check_IsValid(keyName);
+        int value2 = Check_IsValid(keyName2);
+
+        if (value != 9999 || value2 != 9999)
+        {
+
+            if (inputs[value].keyWheelState != 3 && inputs[value].keyWheelState != 4)
+            {
+                if (GetButton(keyName))
+                    inputs[value].keyValue += gravity * Time.deltaTime;
+                if (GetButton(keyName2))
+                    inputs[value].keyValue -= gravity * Time.deltaTime;
+
+                if (!GetButton(keyName) && !GetButton(keyName2))
+                    inputs[value].keyValue = Mathf.Lerp(inputs[value].keyValue, 0, gravity * Time.deltaTime);
+
+                inputs[value].keyValue = Mathf.Clamp(inputs[value].keyValue, -1, 1);
+            }
+            else if (inputs[value].keyWheelState == 3)
+            {
+                float xMovement = Input.GetAxisRaw("Mouse X") * gravity;
+                inputs[value].keyValue = xMovement;
+            }
+            else if (inputs[value].keyWheelState == 4)
+            {
+                float yMovement = Input.GetAxisRaw("Mouse Y") * gravity;
+                inputs[value].keyValue = yMovement;
+            }
+
+            return inputs[value].keyValue;
+        }
+        else
+        {
+            return 0;
+        }
+    }
+
+
+    // Load and save bindings
+    void loadBindings()
+    {
+        // Load Primary & Secondary keys from playerprefs.
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            if (PlayerPrefs.HasKey("settings_bindings_" + inputs[i].keyName))
+            {
+                string[] parsed = PlayerPrefs.GetString("settings_bindings_" + inputs[i].keyName).Split('^');
+                inputs[i].keyInput = (KeyCode)System.Enum.Parse(typeof(KeyCode), parsed[0]);
+
+                if (parsed.Length >= 2)
+                    inputs[i].keyWheelState = int.Parse(parsed[1]);
+                else
+                    inputs[i].keyWheelState = 0;
+            }
+            else
+            {
+                print("Not Found: settings_bindings_" + inputs[i].keyName);
+            }
+
+            if (PlayerPrefs.HasKey("settings_bindings_sec_" + inputs[i].keyName))
+            {
+                inputs[i].keyInput2 = (KeyCode)System.Enum.Parse(typeof(KeyCode), PlayerPrefs.GetString("settings_bindings_sec_" + inputs[i].keyName));
+            }
+        }
+
+        SaveBindings();
+    }
+
+    public void SaveBindings()
+    {
+        // Save the current inputs into the player prefs.
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            PlayerPrefs.SetString("settings_bindings_" + inputs[i].keyName, inputs[i].keyInput.ToString() + "^" + inputs[i].keyWheelState.ToString());
+            PlayerPrefs.SetString("settings_bindings_sec_" + inputs[i].keyName, inputs[i].keyInput2.ToString());
+        }
+
+        PlayerPrefs.Save();
+    }
+
+    // Rebinding Keys
+    public void HardStartRebind(string keyNameGET, bool wantSecond, hardInputUI inputFrom)
+    {
+
+        currentBindFrom = inputFrom;
+        replaceSecond = wantSecond;
+        currentRebind = keyNameGET;
+        StartCoroutine(waitForKeyPress());
+    }
+
+    IEnumerator waitForKeyPress()
+    {
+        
+        yield return new WaitForEndOfFrame();
+
+        while (!Input.anyKeyDown && Input.mouseScrollDelta.y == 0)
+        {
+            yield return null;
+        }
+
+        if (Input.mouseScrollDelta.y != 0)
+        {
+            print(Input.mouseScrollDelta.ToString());
+            replaceSecond = false;
+            if (Input.mouseScrollDelta.y > 0)
+            {
+                hardRebind(currentRebind, KeyCode.None, 1);
+            }
+            else
+            {
+                hardRebind(currentRebind, KeyCode.None, 2);
+            }
+        }
+        else
+        {
+            foreach (KeyCode kcode in Enum.GetValues(typeof(KeyCode)))
+            {
+                if (Input.GetKeyDown(kcode))
+                {
+                    hardRebind(currentRebind, kcode, 0);
+                }
+            }
+        }
+    }
+
+    void hardRebind(string rebindName, KeyCode inputKey, int keyWheelState)
+    {
+        //print("Rebinding: " + rebindName + " from " + keyMaps[rebindName].keyInput.ToString() + " to " + inputKey.ToString() + " WHEELSTATE: " + keyWheelState);
+
+        int keyVal = Check_IsValid(rebindName);
+
+        if (inputKey == KeyCode.Delete)
+            inputKey = KeyCode.None;
+
+        if (!replaceSecond)
+            inputs[keyVal].keyInput = inputKey;
+        else
+            inputs[keyVal].keyInput2 = inputKey;
+        inputs[keyVal].keyWheelState = keyWheelState;
+
+
+
+        currentBindFrom.beingBound = false;
+        SaveBindings();
+    }
+
+    public string GetKeyName(string keyName, bool wantSecond)
+    {
+        string keyString = "";
+        int val = Check_IsValid(keyName);
+
+        if (!wantSecond)
+            keyString = inputs[val].keyInput.ToString();
+        else
+            keyString = inputs[val].keyInput2.ToString();
+
+        if (inputs[val].keyWheelState == 0)
+        {
+            if (keyString.Contains("Alpha"))
+                keyString = keyString.Replace("Alpha", "");
+            else if (keyString.Contains("Keypad"))
+                keyString = keyString.Replace("Keypad", "Keypad ");
+            else if (keyString.Contains("Left"))
+                keyString = keyString.Replace("Left", "Left ");
+            else if (keyString.Contains("Right"))
+                keyString = keyString.Replace("Right", "Right ");
+            else if (keyString.Contains("Mouse0"))
+                keyString = "Left Click";
+            else if (keyString.Contains("Mouse1"))
+                keyString = "Right Click";
+            else if (keyString.Contains("Mouse"))
+                keyString = "Mouse " + keyString.Replace("Mouse", "");
+        }
+        else
+        {
+            if (inputs[val].keyWheelState == 1)
+                keyString = "Mouse Wheel Up";
+            else if (inputs[val].keyWheelState == 2)
+                keyString = "Mouse Wheel Down";
+            else if (inputs[val].keyWheelState == 3)
+                keyString = "Mouse X";
+            else if (inputs[val].keyWheelState == 4)
+                keyString = "Mouse Y";
+        }
+
+        return keyString;
+    }
+
+    // Various checks and outputs for scripts to run.
+    int Check_IsValid(string keyname)
+    {
+        int returnValue = 9999;
+
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            if (inputs[i].keyName == keyname)
+            {
+                returnValue = i;
+                break;
+            }
+        };
+
+        if (returnValue == 9999)
+            Error_NotValidKey(keyname);
+        return returnValue;
+    }
+
+    void Error_NotValidKey(string keyname)
+    {
+        Debug.LogWarning("KEY NOT PRESENT: \"" + keyname + "\". Please either try checking the name of the input or re-applying changes on the inputs controller.");
+    }
+}

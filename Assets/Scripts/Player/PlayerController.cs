@@ -38,7 +38,12 @@ public class PlayerController : MonoBehaviour {
 	public ButtonAndSoundManager bsm;
 	public AudioClip jumpSound;
 
+	public hardInput hInput = null;
+
 	void Start() {
+		hInput = GameObject.FindObjectOfType<hardInput>();
+		hInput.SaveBindings ();
+
 		rigidBody = GetComponent<Rigidbody2D> ();
 		isOnMovingPlatform = false;
 		isOnBubble = false;
@@ -55,10 +60,10 @@ public class PlayerController : MonoBehaviour {
 			isRestarting = true;
 		}
 
-		if (Input.GetKeyDown(KeyCode.D)) {
+		if (hInput.GetKeyDown ("right")) {
 			GetComponent<SpriteRenderer> ().flipX = (transform.localScale.x > 0);
 		}
-		if (Input.GetKeyDown(KeyCode.A)) {
+		if (hInput.GetKeyDown ("left")) {
 			GetComponent<SpriteRenderer> ().flipX = GetComponent<SpriteRenderer> ().flipX = !(transform.localScale.x > 0);
 		}
 
@@ -82,7 +87,7 @@ public class PlayerController : MonoBehaviour {
 
 		if (!preventMovement && !isRestarting) {
 			isGrounded = checkGrounded ();
-			handleMovement (Input.GetAxis ("Horizontal"));
+			handleMovement (hInput.GetAxis ("right", "left", 7));
 			flipHorizontal ();
 		} else {
 			rigidBody.velocity = new Vector2 (0, 0);
@@ -107,7 +112,7 @@ public class PlayerController : MonoBehaviour {
 	            }
 	        }
 
-			if (isGrounded && Input.GetKeyDown(KeyCode.Space)) { //jumping
+			if (isGrounded && hInput.GetKeyDown("jump")) { //jumping
 				if (!bsm.isSFXMuted) {
 					AudioSource.PlayClipAtPoint (jumpSound, transform.position);
 				}
@@ -119,7 +124,7 @@ public class PlayerController : MonoBehaviour {
 		} else if (isOnIceBlock) {
             Vector2 vel = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             curVel = Vector2.Lerp(rigidBody.velocity, vel, 3*Time.deltaTime);
-			if (isGrounded && Input.GetKeyDown(KeyCode.Space)) { //jumping
+			if (isGrounded && hInput.GetKeyDown("jump")) { //jumping
 				if (!bsm.isSFXMuted) {
 					AudioSource.PlayClipAtPoint (jumpSound, transform.position);
 				}
@@ -129,15 +134,15 @@ public class PlayerController : MonoBehaviour {
                 isGrounded = true;
             }
 
-            if (Input.GetKey(KeyCode.D)) {
+			if (hInput.GetKey("right")) {
 				rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             }
 
-            if (Input.GetKey(KeyCode.A)) {
+			if (hInput.GetKey("left")) {
 				rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             }
 
-            if (Input.GetKey(KeyCode.RightArrow) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.UpArrow)) {
+			if (hInput.GetKey("right") || hInput.GetKey("left") || hInput.GetKey("shoot_up")) {
                 rigidBody.velocity = new Vector2(movementSpeed * horizontal, rigidBody.velocity.y);
             }
 		}
@@ -145,11 +150,11 @@ public class PlayerController : MonoBehaviour {
 
 	//Turn sprite around depending on arrow key pressed
 	private void flipHorizontal() {
-		if (Input.GetKeyDown(KeyCode.LeftArrow)) {
+		if (hInput.GetKeyDown("shoot_left")) {
 			if (transform.localScale.x > 0) {
 				transform.localScale = new Vector3 (-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 			}
-		} else if (Input.GetKeyDown(KeyCode.RightArrow)) {
+		} else if (hInput.GetKeyDown("shoot_right")) {
 			if (transform.localScale.x < 0) {
 				transform.localScale = new Vector3 (-transform.localScale.x, transform.localScale.y, transform.localScale.z);
 			}

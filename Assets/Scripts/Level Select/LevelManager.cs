@@ -21,6 +21,9 @@ public class LevelManager : MonoBehaviour {
 	public GameObject bas;
 	public Font buttonFont;
 
+	public GameObject controlsPanel;
+	public Text left, right, jump, shoot_left, shoot_right, shoot_up;
+
 	void Start () {
 		latestLevelBeat = PlayerPrefs.GetInt ("LatestLevelBeat"); //get saved variable
 
@@ -65,5 +68,13 @@ public class LevelManager : MonoBehaviour {
 		}
 		PlayerPrefs.Save();
 		SceneManager.LoadScene ("Level " + levelNumber);
+	}
+
+	public void openControls() {
+		controlsPanel.SetActive (true);
+	}
+
+	public void saveClose() {
+		controlsPanel.SetActive (false);
 	}
 }
